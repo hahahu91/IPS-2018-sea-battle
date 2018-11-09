@@ -330,6 +330,11 @@ const GAME = {
     move: false,
     finish: false,
 }
+const ENEMY_PREV_HIT = {
+    x: 0,
+    y: 0,
+    isHit: false,
+}
 function main () {    
     const canvas = document.getElementById('canvas');
     const WIDTH = 1000;
@@ -358,44 +363,102 @@ function checkShips() {
         console.log('не установленны корабли !!!');
     }
 }
-function enemyMove(ctx, prevEl = {
-    x: 0,
-    y: 0,
-    field: 2,
-}) {
-    let elem = II(prevEl);
-    //console.log(elem.x, elem.y, 'враг');
+function enemyMove(ctx) {
+    let elem = II();
     const hit = attack(ctx, MY_MAP, ENEMY_MOVES, MY_SHIPS, elem);
     if (hit) {
         enemyMove(ctx, elem);
     } else {
-        //console.log('ваш ход');
         GAME.move = !GAME.move;
     }
 
 }
-function II(prevEl) {
-    let x;
-    let y;
-    if (prevEl.field != 2) { //ранение было добиваем
-
-    } else {
+function killShip(el, enemyMove) {
+    let x = el.x;
+    let y = el.y;
+    if (x != 9) {
         do {
-            x = getRandomInt(0, 10);
-            y = getRandomInt(0, 10);
-            //console.log(ENEMY_MOVES[y][x]);
-        } while (ENEMY_MOVES[y][x] != 0)
+            x++;
+        } while (enemyMove[y][x] == 1 && x != 9);
+        if (enemyMove[y][x] != 0) {
+            x = el.x;
+        } else {
+            return {
+                x: x,
+                y: y,
+                field: 0,
+            }
+        }
     }
-    if (MY_MAP[y][x] == 1) {
-        ENEMY_MOVES[y][x] = 1;
-    } else {
-        ENEMY_MOVES[y][x] = -1;
+    if (y != 9) {
+        do {
+            y++;
+        } while (enemyMove[y][x] == 1 && y != 9);
+        if (enemyMove[y][x] != 0) {
+            y = el.y;
+        } else {
+            return {
+                x: x,
+                y: y,
+                field: 0,
+            }
+        }
+    }
+    if (x != 0) {
+        do {
+            x--;
+        } while (enemyMove[y][x] == 1 && x != 0);
+        if (enemyMove[y][x] != 0) {
+            x = el.x;
+        } else {
+            return {
+                x: x,
+                y: y,
+                field: 0,
+            }
+        }
+    }
+    if (y != 0) {
+        do {
+            y--;
+        } while (enemyMove[y][x] == 1 && y != 0);
+        if (enemyMove[y][x] != 0) {
+            y = el.y;
+        } else {
+            return {
+                x: x,
+                y: y,
+                field: 0,
+            }
+        }
     }
     return {
         x: x,
         y: y,
         field: 0,
     }
+}
+function II() {
+    let el = {
+        x: 0,
+        y: 0,
+        field: 0,
+    };
+    
+    do {
+        if (ENEMY_PREV_HIT.isHit) { //ранение было добиваем
+            el = killShip(ENEMY_PREV_HIT, ENEMY_MOVES);            
+        } else {
+            el.x = getRandomInt(0, 10);
+            el.y = getRandomInt(0, 10);
+        }
+    } while (ENEMY_MOVES[el.y][el.x] != 0);
+    if (MY_MAP[el.y][el.x] == 1) {
+        ENEMY_MOVES[el.y][el.x] = 1;
+    } else {
+        ENEMY_MOVES[el.y][el.x] = -1;
+    }
+    return el;
 }
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
@@ -417,7 +480,6 @@ function updateField(event) {
     const ctx = canvas.getContext('2d');
     const elem = searchElem(mousePos, 400);
     updateOneField(ctx, OFFSET_FIELD, OFFSET_FIELD, 400, elem);
-    //console.log(mousePos);
 }
 function searchElem(mouseCoordinates, boxWidth) {
     const widthSquare = boxWidth / 10;
@@ -450,11 +512,10 @@ function updateOneField(ctx, xBegin, yBegin, boxWidth, elem) {
         if(elem.field == 1) {
             if (GAME.move) {
                 if(!GAME.finish) {
-                    let isHit = attack(ctx, MAP, ENEMY_MAP, ENEMY_SHIPS, elem);
-                    if (!isHit) {
-                        //console.log('ход врага');
+                    let Hit = attack(ctx, MAP, ENEMY_MAP, ENEMY_SHIPS, elem);
+                    if (!Hit.isHit) {
                         GAME.move = !GAME.move;
-                        enemyMove(ctx, );
+                        enemyMove(ctx);
                     }
                 }
             }
@@ -532,9 +593,10 @@ function attack(ctx, map, enemyMap, enemyShips, elem) {
     const widthSquare = 40;
     const x = OFFSET_FIELD + elem.x * widthSquare + elem.field * (400 + OFFSET_FIELD);
     const y = OFFSET_FIELD + elem.y * widthSquare;
+
     if (GAME.move == false || GAME.move == true && enemyMap[elem.y][elem.x] != 1 && enemyMap[elem.y][elem.x] != -1) { //|| GAME.move == false
 
-        console.log(enemyMap[elem.y][elem.x] , GAME.move);
+        //console.log(enemyMap[elem.y][elem.x] , GAME.move);
         if (map[elem.y][elem.x]) {
             enemyMap[elem.y][elem.x] = 1;
             markDiaganalElements(elem, enemyMap);
@@ -554,11 +616,19 @@ function attack(ctx, map, enemyMap, enemyShips, elem) {
                     const diffY = (elem.y - coord[i].y) * widthSquare;
                     ctx.fillRect( x - diffX, y - diffY, widthSquare - 1, widthSquare - 1);
                 }
+                if (GAME.move == false) {
+                    ENEMY_PREV_HIT.isHit = false;
+                }
                 return true;
             } else {
                 ctx.fillStyle = "red";
                 ctx.strokeRect(x, y, widthSquare - 1, widthSquare - 1);
                 ctx.fillText("X", x + widthSquare / 2, y + widthSquare / 2);
+                if (GAME.move == false) {
+                    ENEMY_PREV_HIT.x = elem.x;
+                    ENEMY_PREV_HIT.y = elem.y;
+                    ENEMY_PREV_HIT.isHit = true;
+                }
                 return true;
             }
         } else {
