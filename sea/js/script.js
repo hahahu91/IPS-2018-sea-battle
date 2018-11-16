@@ -38,7 +38,7 @@ const MAPS =[
         [0, 0, 1, 1, 1, 0, 0, 0, 0, 0],
     ],
     [
-        [1, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+         [1, 0, 0, 0, 0, 0, 0, 1, 1, 1],
          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
          [1, 0, 0, 1, 0, 0, 0, 0, 1, 0],
          [1, 0, 0, 1, 0, 0, 0, 0, 1, 0],
@@ -50,7 +50,7 @@ const MAPS =[
          [0, 0, 1, 0, 1, 0, 0, 0, 0, 1],
     ],
     [
-        [1, 1, 0, 1, 1, 0, 0, 1, 0, 1],
+         [1, 1, 0, 1, 1, 0, 0, 1, 0, 1],
          [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
          [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
          [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -555,6 +555,8 @@ const BEGIN_FIELD = 0;
 const MY_FIELD = 0;
 const ENEMY_FIELD = 1;
 const WIDTH_SQUARE = 40;
+const MY_MOVE = true;
+const ENEMY_MOVE = false;
 function main () {    
     const canvas = document.getElementById('canvas');
     const WIDTH = 1000;
@@ -580,13 +582,11 @@ function redrawAllFields(ctx, map1, map2, map3) {
     if (Game.placement) {
         drawMap(ctx, map1, MY_FIELD);
     } else {
-        //drawMap(ctx, map1, MY_FIELD);
         drawMap(ctx, map2, ENEMY_FIELD);
         drawMap(ctx, map3, MY_FIELD);
     }
 }
 function drawMap (ctx, map, field) {
-
     ctx.font = "Bold 30pt Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -595,25 +595,13 @@ function drawMap (ctx, map, field) {
         for (let j = 0; j < map[i].length; j++){
             const x = OFFSET_FIELD + j * WIDTH_SQUARE + field * (boxWidth + OFFSET_FIELD);
             const y = OFFSET_FIELD + i * WIDTH_SQUARE;
-            //console.log(map[i][j]);
             if (Game.placement) {
                 if (field == MY_FIELD) {
                     drawPlacementSquare(ctx, x, y, map[i][j]);
                 };
             } else {
-                drawSquare(ctx, x, y, map[i][j]);/*
-                if (map[i][j] == HAVE_SHIP) {
-                    drawHitSquare(ctx, x, y);
-                } else if (map[i][j] == MISS){
-                    drawMissedSquare(ctx, x, y);
-                } else if (map[i][j] == KILLED){
-                    drawKilledSquare(ctx, x, y);
-                } else if (map[i][j] == 0) {
-                    drawEmptySquare(ctx, x, y); 
-                } */
-            }
-
-        
+                drawSquare(ctx, x, y, map[i][j]);
+            }        
         }
     }
 }
@@ -664,7 +652,7 @@ function drawEmptySquare (ctx, x, y) {
 }
 function checkShips() {
     console.log(MAX_SHIPS, MyShips);
-    if (isEqual(MAX_SHIPS, MyShips)) {        
+    if (isEqualShips(MAX_SHIPS, MyShips)) {        
         Game.placement = false;
         Game.move = true;
     } else {
@@ -760,11 +748,11 @@ function AI() {
             el.x = getRandomInt(0, 10);
             el.y = getRandomInt(0, 10);
         }
-    } while (EnemyMoves[el.y][el.x] != 0);
-    if (MyMap[el.y][el.x] == 1) {
-        EnemyMoves[el.y][el.x] = 1;
+    } while (EnemyMoves[el.y][el.x] != EMPTY);
+    if (MyMap[el.y][el.x] == HAVE_SHIP) {
+        EnemyMoves[el.y][el.x] = HAVE_SHIP;
     } else {
-        EnemyMoves[el.y][el.x] = -1;
+        EnemyMoves[el.y][el.x] = MISS;
     }
     return el;
 }
@@ -777,7 +765,7 @@ function isNull(obj) {
     };
     return true;
 }
-function isEqual(obj1, obj2) {
+function isEqualShips(obj1, obj2) {
     return obj1.oneDesk == obj2.oneDesk
         && obj1.twoDesk == obj2.twoDesk
         && obj1.threeDesk == obj2.threeDesk
@@ -787,7 +775,7 @@ function updateField(event) {
     const mousePos = mouseCoordinates(canvas, event);
     const ctx = canvas.getContext('2d');
     const elem = searchElem(mousePos, 400);
-    updateOneField(ctx, OFFSET_FIELD, OFFSET_FIELD, 400, elem);
+    updateOneField(ctx, elem);
 }
 function searchElem(mouseCoordinates, boxWidth) {
     const widthSquare = boxWidth / 10;
@@ -812,10 +800,10 @@ function searchElem(mouseCoordinates, boxWidth) {
     
     return false;
 }
-function removeDesk(ctx, map, ships, elem, x, y) {
-    map[elem.y][elem.x] = 0;
+function removeDesk(map, ships, elem) {
+    map[elem.y][elem.x] = EMPTY;
     const typeShip = countShip(elem, map);                     
-    let lengthShip  = checkShipLen(elem, map, typeShip); 
+    const lengthShip  = checkShipLen(elem, map, typeShip); 
     ships[typeShip]--;
     if (typeShip == 'fourDesk') {
         if (lengthShip == 'threeDesk') {
@@ -835,64 +823,50 @@ function removeDesk(ctx, map, ships, elem, x, y) {
         }
     }
     if (typeShip == 'twoDesk') {
-        ships.twoDesk--;
         ships.oneDesk++;
     } 
-    
     //ctx.fillStyle = "#808080";
     //ctx.fillRect(x, y, 39, 39);
 }
-function addShip(ctx, map, ships, elem, x, y) {
-    let can = checkDiaganalElements(elem, map);
-    if (can) {
+function addShip(map, ships, elem) {
+    if (checkDiaganalElements(elem, map)) {
         const typeShip = countShip(elem, map);
-        if (typeShip == "oneDesk" || typeShip == "twoDesk" || typeShip == "threeDesk" || typeShip == "fourDesk"){
-            if (ships.oneDesk < MAX_SHIPS.oneDesk || ships.twoDesk < MAX_SHIPS.twoDesk 
-                || ships.threeDesk < ships.threeDesk || ships.fourDesk < MAX_SHIPS.fourDesk) {
-                map[elem.y][elem.x] = 1;
+        if (typeShip != null){
+            if (!isEqualShips(ships, MAX_SHIPS)) {
+                map[elem.y][elem.x] = HAVE_SHIP;
                 ships[typeShip]++;
-                if (typeShip == 'threeDesk' || typeShip == 'fourDesk') {
-                    let c  = checkShipLen(elem, map, typeShip); 
-                    //console.log(c, typeShip);
-                    if (c == 'oneDesk') {
-                        ships.oneDesk -= 2;
-                    } else if (c == 'twoDesk'){
-                        ships.twoDesk--;
-                        if (typeShip == 'fourDesk') {
-                            ships.oneDesk--;
-                        }
-                    } else if (c == 'threeDesk') {
-                        ships.threeDesk--;
-                    }
-                } else if (typeShip == 'twoDesk') {
-                    ships.oneDesk--;
-                }
-            } else {
-                can = false;
-            }
-        } else {
-            can = false;
-        }
-        if (can) {
-            //ctx.fillStyle = "green";
-           // ctx.fillRect(x, y, 39, 39);
-        }
+                const lenPrevShip  = checkShipLen(elem, map, typeShip);
+                removePrevTypeShips(typeShip, lenPrevShip, ships);
+            } 
+        } 
     }
 }
-function updateOneField(ctx, xBegin, yBegin, boxWidth, elem) {
-    const widthSquare = boxWidth / 10;
-    if (elem) {
-        const x = xBegin + elem.x * widthSquare + elem.field * (boxWidth + OFFSET_FIELD);
-        const y = yBegin + elem.y * widthSquare;
-        if(Game.placement && elem.field == MY_FIELD) {
-            (MyMap[elem.y][elem.x]) ? removeDesk(ctx, MyMap, MyShips, elem, x, y): addShip(ctx, MyMap, MyShips, elem,  x, y);
+function removePrevTypeShips(typeShip, lenPrevShip, ships) {
+    if (typeShip == 'threeDesk' || typeShip == 'fourDesk') {
+        if (lenPrevShip == 'oneDesk') {
+            ships.oneDesk -= 2;
+        } else if (lenPrevShip == 'twoDesk'){
+            ships.twoDesk--;
+            if (typeShip == 'fourDesk') {
+                ships.oneDesk--;
+            }
+        } else if (lenPrevShip == 'threeDesk') {
+            ships.threeDesk--;
         }
-
+    } else if (typeShip == 'twoDesk') {
+        ships.oneDesk--;
+    }
+}
+function updateOneField(ctx, elem) {
+    if (elem) {
+        if(Game.placement && elem.field == MY_FIELD) {
+            (MyMap[elem.y][elem.x] == HAVE_SHIP) ? removeDesk(MyMap, MyShips, elem): addShip(MyMap, MyShips, elem);
+        }
         if(elem.field == ENEMY_FIELD) { //конст
-            if (Game.move) {
+            if (Game.move == MY_MOVE) {
                 if(!Game.finish) {
-                    let Hit = attack(ctx, MAP, EnemyMap, EnemyShips, elem);
-                    if (!Hit.isHit) {
+                    let hit = attack(ctx, MAP, EnemyMap, EnemyShips, elem);
+                    if (!hit) {
                         Game.move = !Game.move;
                         enemyMove(ctx);
                     }
@@ -906,11 +880,9 @@ function attack(ctx, map, EnemyMap, enemyShips, elem) {
     const x = OFFSET_FIELD + elem.x * widthSquare + elem.field * (400 + OFFSET_FIELD);
     const y = OFFSET_FIELD + elem.y * widthSquare;
 
-    if (Game.move == false || Game.move == true && EnemyMap[elem.y][elem.x] != 1 && EnemyMap[elem.y][elem.x] != -1) { //|| Game.move == false
-
-        //console.log(EnemyMap[elem.y][elem.x] , Game.move);
-        if (map[elem.y][elem.x]) {
-            EnemyMap[elem.y][elem.x] = 1;
+    if (Game.move == ENEMY_MOVE || Game.move == MY_MOVE && EnemyMap[elem.y][elem.x] == EMPTY) { //|| Game.move == false
+        if (map[elem.y][elem.x] == HAVE_SHIP) {
+            EnemyMap[elem.y][elem.x] = HAVE_SHIP;
             markDiaganalElements(elem, EnemyMap);
             const lengthShip = countShip(elem, map);
             const len = countShip(elem, EnemyMap);
@@ -924,10 +896,7 @@ function attack(ctx, map, EnemyMap, enemyShips, elem) {
                 //ctx.fillStyle = "red";
                 const coord = coordinateShip(elem, EnemyMap);
                 for(let i = 0; i < coord.length; i++) {
-                    const diffX = (elem.x - coord[i].x) * widthSquare ;
-                    const diffY = (elem.y - coord[i].y) * widthSquare;
                     EnemyMap[coord[i].y][coord[i].x] = KILLED;
-                   // ctx.fillRect( x - diffX, y - diffY, widthSquare - 1, widthSquare - 1);
                 }
                 if (Game.move == false) {
                     EnemyPrevHit.isHit = false;
@@ -937,14 +906,14 @@ function attack(ctx, map, EnemyMap, enemyShips, elem) {
                 //ctx.fillStyle = "red";
                 //ctx.strokeRect(x, y, widthSquare - 1, widthSquare - 1);
                 //ctx.fillText("X", x + widthSquare / 2, y + widthSquare / 2);
-                if (Game.move == false) {
+                if (Game.move == ENEMY_MOVE) {
                     EnemyPrevHit.x = elem.x;
                     EnemyPrevHit.y = elem.y;
                     EnemyPrevHit.isHit = true;
                 }
                 return true;
             }
-        } else {
+        } else {   
             EnemyMap[elem.y][elem.x] = MISS;
            // ctx.fillStyle = "black";
             //ctx.fillText(".", x + widthSquare / 2, y + widthSquare / 4);
@@ -952,8 +921,7 @@ function attack(ctx, map, EnemyMap, enemyShips, elem) {
         }
     } else {
         return true;
-    }
-   
+    }   
 }
 function checkShipLen(elem, map, search) {
     count = 0;
@@ -1012,32 +980,42 @@ function checkShipLen(elem, map, search) {
     return TYPE_SHIPS[count];
 }
 function countShip(elem, map) {    
+    const checkAllWay = {
+        left: {
+            y: 0,
+            x: -1
+        },
+        right: {
+            y: 0,
+            x: 1
+        },
+        up: {
+            y: -1,
+            x: 0
+        },
+        down: {
+            y: 1,
+            x: 0
+        }
+    }
     let count = 1;
-    let x = elem.x;
-    let y = elem.y;
-    while (x < 9 && map[y][x + 1] == 1) {
-        x++;
-        count++;
+    let x;
+    let y;
+
+    for (const key of Object.keys(checkAllWay)) {
+        x = elem.x + checkAllWay[key].x;
+        y = elem.y + checkAllWay[key].y;
+        while (y >= 0 && y <= 9 && x >= 0 && x <= 9 && map[y][x] == 1) {
+            y = y + checkAllWay[key].y;
+            x = x + checkAllWay[key].x;
+            count++;
+        }
     }
-    x = elem.x;
-    y = elem.y;
-    while (x > 0 && map[y][x - 1] == 1) {
-        x--;
-        count++;
+    if (count >= 1 && count <= 4) {
+        return TYPE_SHIPS[count];
+    } else {
+        return null;
     }
-    x = elem.x;
-    y = elem.y;
-    while (y < 9 && map[y + 1][x] == 1) {
-        y++;
-        count++;
-    }
-    x = elem.x;
-    y = elem.y;
-    while (y > 0 && map[y - 1][x] == 1) {
-        y--;
-        count++;
-    }
-    return TYPE_SHIPS[count];
 }
 function coordinateShip(elem, map) {    
     let el = [];
@@ -1189,8 +1167,6 @@ function mouseCoordinates(canvas, event){
         y: tempY - OFFSET_FIELD,
     }
 }
-
-
 
 function draw(ctx, WIDTH, HEIGHT) {
     createField(ctx, WIDTH, HEIGHT);
