@@ -1,6 +1,210 @@
-//import {MAPS} from './inc/maps.js';
-
+//import {MAPS} from "./inc/maps.js"; 
+//функции примерно по 20 строк
 const MAPS =[
+    [
+        [0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+        [0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+        [0, 0, 0, 0, 0, 1, 0, 1, 0, 1],
+        [1, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+    ],
+    [	
+        [1, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+        [1, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 0, 1, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+        [0, 0, 1, 0, 1, 0, 0, 0, 0, 1],
+    ],
+    [
+        [1, 1, 0, 1, 1, 0, 0, 1, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 1, 0, 1, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 1, 1, 1, 0, 0, 0, 0, 0],
+    ],
+    [
+        [1, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [1, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+         [1, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [1, 0, 0, 0, 0, 1, 1, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+         [0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+         [0, 0, 1, 0, 1, 0, 0, 0, 0, 1],
+    ],
+    [
+        [1, 1, 0, 1, 1, 0, 0, 1, 0, 1],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+         [0, 0, 1, 0, 1, 0, 0, 0, 0, 1],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+         [0, 0, 1, 1, 1, 0, 0, 0, 0, 0],
+    ],
+    [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 1, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+        [0, 1, 0, 1, 0, 0, 1, 0, 0, 0],
+        [0, 1, 0, 1, 0, 0, 1, 0, 0, 1],
+    ],
+    [
+        [0, 1, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 1, 0, 0, 1, 0, 0, 0, 1, 0],
+        [0, 1, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+        [0, 0, 1, 1, 0, 0, 0, 1, 0, 0],
+    ],
+    [
+        [0, 1, 1, 0, 0, 1, 1, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 1, 1, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 0, 1, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 1, 1, 1, 0, 0, 0, 0, 1],
+    ],
+    [
+        [0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+        [1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 1, 0, 0, 1, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 0, 0, 0, 1, 1, 1, 1],
+        [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 1, 0, 0, 1, 0, 1],
+    ],
+    [
+        [0, 0, 1, 1, 0, 0, 1, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 0, 0, 0, 0, 1, 0, 1],
+        [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 0, 0, 0, 1, 1, 1, 0],
+        [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ],
+    [
+        [0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+        [0, 0, 1, 1, 1, 1, 0, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+        [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 1, 0, 1, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 1, 0, 0, 0, 0, 0, 0],
+    ],
+    [
+        [0, 0, 1, 0, 1, 0, 0, 0, 0, 1],
+        [1, 0, 1, 0, 1, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 1, 0, 0, 1, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+        [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+    ],
+    [
+        [0, 0, 1, 1, 1, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+        [1, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 1, 0, 0, 0, 1, 0, 1],
+        [0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 1, 1, 0, 0, 0, 0],
+    ],
+    [
+        [0, 0, 0, 0, 1, 0, 0, 0, 1, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+        [1, 0, 0, 1, 0, 1, 0, 0, 0, 1],
+        [1, 0, 0, 1, 0, 1, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+        [1, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+    ],
+    [
+        [1, 1, 0, 0, 1, 1, 1, 0, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+        [1, 1, 0, 0, 0, 0, 0, 0, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 0, 1, 0, 1, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ],
+    [
+        [0, 1, 1, 1, 1, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 1, 0, 0, 1, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+        [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 1, 0, 0, 0, 1, 1, 0],
+    ],  
+    [
+        [0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+        [0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+        [0, 0, 0, 0, 0, 1, 0, 1, 0, 1],
+        [1, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+    ],
     [
         [1, 0, 0, 1, 0, 1, 1, 1, 0, 1],
         [1, 0, 0, 1, 0, 0, 0, 0, 0, 1],
@@ -270,7 +474,7 @@ const MAPS =[
 const num = getRandomInt(0, MAPS.length);
 console.log(MAPS.length, num);
 const MAP = MAPS[num];
-const MY_MAP = [
+const MyMap = [
     [0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0],
@@ -282,7 +486,7 @@ const MY_MAP = [
     [0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0],
 ]
-const ENEMY_MAP = [
+const EnemyMap = [
     [0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0],
@@ -295,25 +499,31 @@ const ENEMY_MAP = [
     [0,0,0,0,0,0,0,0,0,0],
 ];
 const OFFSET_FIELD = 40;
+const TYPE_SHIPS = {
+    1: 'oneDesk',
+    2: 'twoDesk',
+    3: 'threeDesk',
+    4: 'fourDesk',
+}
 const MAX_SHIPS = {
-    1: 4,
-    2: 3,
-    3: 2,
-    4: 1,
+    oneDesk: 4,
+    twoDesk: 3,
+    threeDesk: 2,
+    fourDesk: 1,
 }
-const MY_SHIPS = {
-    1: 0,
-    2: 0,
-    3: 0,
-    4: 0,
+const MyShips = {
+    oneDesk: 0,
+    twoDesk: 0,
+    threeDesk: 0,
+    fourDesk: 0,
 }
-const ENEMY_SHIPS = {
-    1: 4,
-    2: 3,
-    3: 2,
-    4: 1,
+const EnemyShips = {
+    oneDesk: 4,
+    twoDesk: 3,
+    threeDesk: 2,
+    fourDesk: 1,
 }
-const ENEMY_MOVES = [
+const EnemyMoves = [
     [0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0],
@@ -325,16 +535,26 @@ const ENEMY_MOVES = [
     [0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0],
 ]
-const GAME = {
+const Game = {
     placement: true,
     move: false,
     finish: false,
 }
-const ENEMY_PREV_HIT = {
+const EnemyPrevHit = {
     x: 0,
     y: 0,
     isHit: false,
 }
+const NO_SHIP = -2;
+const MISS = -1;
+const HAVE_SHIP = 1;
+const KILLED = 2;
+const EMPTY = 0;
+const END_FIELD = 9;
+const BEGIN_FIELD = 0;
+const MY_FIELD = 0;
+const ENEMY_FIELD = 1;
+const WIDTH_SQUARE = 40;
 function main () {    
     const canvas = document.getElementById('canvas');
     const WIDTH = 1000;
@@ -351,35 +571,123 @@ function main () {
         const currentTimeStamp = Date.now();
         const deltaTime = (currentTimeStamp - lastTimestamp) * 0.001;
         lastTimestamp = currentTimeStamp;
+        redrawAllFields(ctx, MyMap, EnemyMap, EnemyMoves);
+        requestAnimationFrame(animateFn);
     }
     animateFn();
 }
-function checkShips() {
-    if (isEqual(MAX_SHIPS, MY_SHIPS)) {
-        console.log(MY_MAP);
-        GAME.placement = false;
-        GAME.move = true;
+function redrawAllFields(ctx, map1, map2, map3) {
+    if (Game.placement) {
+        drawMap(ctx, map1, MY_FIELD);
     } else {
-        console.log('не установленны корабли !!!');
+        //drawMap(ctx, map1, MY_FIELD);
+        drawMap(ctx, map2, ENEMY_FIELD);
+        drawMap(ctx, map3, MY_FIELD);
+    }
+}
+function drawMap (ctx, map, field) {
+
+    ctx.font = "Bold 30pt Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    const boxWidth = 400;
+    for(let i = 0; i < map.length; i++){
+        for (let j = 0; j < map[i].length; j++){
+            const x = OFFSET_FIELD + j * WIDTH_SQUARE + field * (boxWidth + OFFSET_FIELD);
+            const y = OFFSET_FIELD + i * WIDTH_SQUARE;
+            //console.log(map[i][j]);
+            if (Game.placement) {
+                if (field == MY_FIELD) {
+                    drawPlacementSquare(ctx, x, y, map[i][j]);
+                };
+            } else {
+                drawSquare(ctx, x, y, map[i][j]);/*
+                if (map[i][j] == HAVE_SHIP) {
+                    drawHitSquare(ctx, x, y);
+                } else if (map[i][j] == MISS){
+                    drawMissedSquare(ctx, x, y);
+                } else if (map[i][j] == KILLED){
+                    drawKilledSquare(ctx, x, y);
+                } else if (map[i][j] == 0) {
+                    drawEmptySquare(ctx, x, y); 
+                } */
+            }
+
+        
+        }
+    }
+}
+function drawPlacementSquare(ctx, x, y, state) {
+    if (state == HAVE_SHIP) {
+        drawDeckSquare(ctx, x, y);
+    } else {
+        drawEmptySquare(ctx, x, y);
+    }
+}
+function drawSquare(ctx, x, y, state) {
+    switch(state) {
+        case HAVE_SHIP: 
+            drawHitSquare(ctx, x, y);
+            break;
+        case MISS: 
+            drawMissedSquare(ctx, x, y);
+            break;
+        case KILLED:
+            drawKilledSquare(ctx, x, y);
+            break;
+        //case EMPTY: 
+           // drawEmptySquare(ctx, x, y); 
+    }
+}
+function drawKilledSquare(ctx, x, y){
+    ctx.fillStyle = "red";
+    ctx.fillRect(x, y , WIDTH_SQUARE - 1, WIDTH_SQUARE - 1);
+}
+function drawMissedSquare(ctx, x, y) {
+    ctx.fillStyle = "black";
+    ctx.fillText(".", x + WIDTH_SQUARE / 2, y + WIDTH_SQUARE / 4);
+}
+function drawDeckSquare(ctx, x, y) {
+    ctx.fillStyle = "green";
+    ctx.fillRect(x, y, WIDTH_SQUARE - 1, WIDTH_SQUARE - 1);
+}
+function drawHitSquare(ctx, x, y) {
+    ctx.fillStyle = "red";
+    ctx.strokeRect(x, y, WIDTH_SQUARE - 1, WIDTH_SQUARE - 1);
+    ctx.fillText("X", x + WIDTH_SQUARE / 2, y + WIDTH_SQUARE / 2);    
+}
+function drawEmptySquare (ctx, x, y) {
+    ctx.fillStyle = "#808080";
+    ctx.strokeStyle = "#000";
+    ctx.strokeRect(x , y, WIDTH_SQUARE, WIDTH_SQUARE);
+    ctx.fillRect(x, y, WIDTH_SQUARE, WIDTH_SQUARE);
+}
+function checkShips() {
+    console.log(MAX_SHIPS, MyShips);
+    if (isEqual(MAX_SHIPS, MyShips)) {        
+        Game.placement = false;
+        Game.move = true;
+    } else {
+        alert('не установленны корабли !!!');
     }
 }
 function enemyMove(ctx) {
-    let elem = II();
-    const hit = attack(ctx, MY_MAP, ENEMY_MOVES, MY_SHIPS, elem);
+    let elem = AI();
+    const hit = attack(ctx, MyMap, EnemyMoves, MyShips, elem);
     if (hit) {
         enemyMove(ctx, elem);
     } else {
-        GAME.move = !GAME.move;
+        Game.move = !Game.move;
     }
 
 }
 function killShip(el, enemyMove) {
     let x = el.x;
     let y = el.y;
-    if (x != 9) {
+    if (x != END_FIELD) {
         do {
             x++;
-        } while (enemyMove[y][x] == 1 && x != 9);
+        } while (enemyMove[y][x] == HAVE_SHIP && x != END_FIELD);
         if (enemyMove[y][x] != 0) {
             x = el.x;
         } else {
@@ -390,10 +698,10 @@ function killShip(el, enemyMove) {
             }
         }
     }
-    if (y != 9) {
+    if (y != END_FIELD) {
         do {
             y++;
-        } while (enemyMove[y][x] == 1 && y != 9);
+        } while (enemyMove[y][x] == HAVE_SHIP && y != END_FIELD);
         if (enemyMove[y][x] != 0) {
             y = el.y;
         } else {
@@ -404,10 +712,10 @@ function killShip(el, enemyMove) {
             }
         }
     }
-    if (x != 0) {
+    if (x != BEGIN_FIELD) {
         do {
             x--;
-        } while (enemyMove[y][x] == 1 && x != 0);
+        } while (enemyMove[y][x] == HAVE_SHIP && x != BEGIN_FIELD);
         if (enemyMove[y][x] != 0) {
             x = el.x;
         } else {
@@ -418,10 +726,10 @@ function killShip(el, enemyMove) {
             }
         }
     }
-    if (y != 0) {
+    if (y != BEGIN_FIELD) {
         do {
             y--;
-        } while (enemyMove[y][x] == 1 && y != 0);
+        } while (enemyMove[y][x] == HAVE_SHIP && y != BEGIN_FIELD);
         if (enemyMove[y][x] != 0) {
             y = el.y;
         } else {
@@ -438,25 +746,25 @@ function killShip(el, enemyMove) {
         field: 0,
     }
 }
-function II() {
+function AI() {
     let el = {
         x: 0,
         y: 0,
         field: 0,
     };
     
-    do {
-        if (ENEMY_PREV_HIT.isHit) { //ранение было добиваем
-            el = killShip(ENEMY_PREV_HIT, ENEMY_MOVES);            
+    do { //переименовать
+        if (EnemyPrevHit.isHit) { //ранение было добиваем 
+            el = killShip(EnemyPrevHit, EnemyMoves);            
         } else {
             el.x = getRandomInt(0, 10);
             el.y = getRandomInt(0, 10);
         }
-    } while (ENEMY_MOVES[el.y][el.x] != 0);
-    if (MY_MAP[el.y][el.x] == 1) {
-        ENEMY_MOVES[el.y][el.x] = 1;
+    } while (EnemyMoves[el.y][el.x] != 0);
+    if (MyMap[el.y][el.x] == 1) {
+        EnemyMoves[el.y][el.x] = 1;
     } else {
-        ENEMY_MOVES[el.y][el.x] = -1;
+        EnemyMoves[el.y][el.x] = -1;
     }
     return el;
 }
@@ -470,10 +778,10 @@ function isNull(obj) {
     return true;
 }
 function isEqual(obj1, obj2) {
-    return obj1[1] == obj2[1]
-        && obj1[2] == obj2[2]
-        && obj1[3] == obj2[3]
-        && obj1[4] == obj2[4];
+    return obj1.oneDesk == obj2.oneDesk
+        && obj1.twoDesk == obj2.twoDesk
+        && obj1.threeDesk == obj2.threeDesk
+        && obj1.fourDesk == obj2.fourDesk;
 }
 function updateField(event) {
     const mousePos = mouseCoordinates(canvas, event);
@@ -504,139 +812,142 @@ function searchElem(mouseCoordinates, boxWidth) {
     
     return false;
 }
+function removeDesk(ctx, map, ships, elem, x, y) {
+    map[elem.y][elem.x] = 0;
+    const typeShip = countShip(elem, map);                     
+    let lengthShip  = checkShipLen(elem, map, typeShip); 
+    ships[typeShip]--;
+    if (typeShip == 'fourDesk') {
+        if (lengthShip == 'threeDesk') {
+            ships.threeDesk++;
+        }
+        if (lengthShip == 'twoDesk') {
+            ships.twoDesk++;
+            ships.oneDesk++;
+        }   
+    }
+    if (typeShip == 'threeDesk') {
+        if (lengthShip == 'oneDesk') {
+            ships.oneDesk += 2;
+        } 
+        if (lengthShip == 'twoDesk'){
+            ships.twoDesk++;
+        }
+    }
+    if (typeShip == 'twoDesk') {
+        ships.twoDesk--;
+        ships.oneDesk++;
+    } 
+    
+    //ctx.fillStyle = "#808080";
+    //ctx.fillRect(x, y, 39, 39);
+}
+function addShip(ctx, map, ships, elem, x, y) {
+    let can = checkDiaganalElements(elem, map);
+    if (can) {
+        const typeShip = countShip(elem, map);
+        if (typeShip == "oneDesk" || typeShip == "twoDesk" || typeShip == "threeDesk" || typeShip == "fourDesk"){
+            if (ships.oneDesk < MAX_SHIPS.oneDesk || ships.twoDesk < MAX_SHIPS.twoDesk 
+                || ships.threeDesk < ships.threeDesk || ships.fourDesk < MAX_SHIPS.fourDesk) {
+                map[elem.y][elem.x] = 1;
+                ships[typeShip]++;
+                if (typeShip == 'threeDesk' || typeShip == 'fourDesk') {
+                    let c  = checkShipLen(elem, map, typeShip); 
+                    //console.log(c, typeShip);
+                    if (c == 'oneDesk') {
+                        ships.oneDesk -= 2;
+                    } else if (c == 'twoDesk'){
+                        ships.twoDesk--;
+                        if (typeShip == 'fourDesk') {
+                            ships.oneDesk--;
+                        }
+                    } else if (c == 'threeDesk') {
+                        ships.threeDesk--;
+                    }
+                } else if (typeShip == 'twoDesk') {
+                    ships.oneDesk--;
+                }
+            } else {
+                can = false;
+            }
+        } else {
+            can = false;
+        }
+        if (can) {
+            //ctx.fillStyle = "green";
+           // ctx.fillRect(x, y, 39, 39);
+        }
+    }
+}
 function updateOneField(ctx, xBegin, yBegin, boxWidth, elem) {
     const widthSquare = boxWidth / 10;
     if (elem) {
         const x = xBegin + elem.x * widthSquare + elem.field * (boxWidth + OFFSET_FIELD);
         const y = yBegin + elem.y * widthSquare;
-        if(elem.field == 1) {
-            if (GAME.move) {
-                if(!GAME.finish) {
-                    let Hit = attack(ctx, MAP, ENEMY_MAP, ENEMY_SHIPS, elem);
+        if(Game.placement && elem.field == MY_FIELD) {
+            (MyMap[elem.y][elem.x]) ? removeDesk(ctx, MyMap, MyShips, elem, x, y): addShip(ctx, MyMap, MyShips, elem,  x, y);
+        }
+
+        if(elem.field == ENEMY_FIELD) { //конст
+            if (Game.move) {
+                if(!Game.finish) {
+                    let Hit = attack(ctx, MAP, EnemyMap, EnemyShips, elem);
                     if (!Hit.isHit) {
-                        GAME.move = !GAME.move;
+                        Game.move = !Game.move;
                         enemyMove(ctx);
                     }
                 }
             }
-        } else {
-            if(GAME.placement) {
-                if (MY_MAP[elem.y][elem.x]) {
-                    MY_MAP[elem.y][elem.x] = 0;
-                    const count = countShip(elem, MY_MAP);                
-                    MY_SHIPS[count]--;
-                    let c  = check3(elem, MY_MAP, count); 
-                    if (count == 4) {
-                        if (c == 3) {
-                            MY_SHIPS[3]++;
-                        }
-                        if (c == 2) {
-                            MY_SHIPS[2]++;
-                            MY_SHIPS[1]++;
-                        }   
-                    }
-                    if (count == 3) {
-                        if (c == 1) {
-                            MY_SHIPS[1] += 2;
-                        } 
-                        if (c == 2){
-                            MY_SHIPS[2]++;
-                        }
-                    }
-                    if (count == 2) {
-                        MY_SHIPS[1]++;
-                    } 
-                    ctx.fillStyle = "#808080";
-                    ctx.fillRect(x, y, widthSquare - 1, widthSquare - 1);
-                } else {
-                    let can = checkDiaganalElements(elem, MY_MAP);
-                    if (can) {
-                        const count = countShip(elem, MY_MAP);
-                        if (count >= 1 && count <= 4){
-                            if (MY_SHIPS[1] < MAX_SHIPS[1] || MY_SHIPS[2] < MAX_SHIPS[2] || MY_SHIPS[3] < MAX_SHIPS[3] || MY_SHIPS[4] < MAX_SHIPS[4]) {
-                                MY_SHIPS[count]++;
-                                if (count >= 3) {
-                                    let c  = check3(elem, MY_MAP, count); 
-                                    //console.log(c, count);
-                                    if (c == 1) {
-                                        MY_SHIPS[1] -= 2;
-                                    } else if (c == 2){
-                                        MY_SHIPS[2]--;
-                                        if (count == 4) {
-                                            MY_SHIPS[1]--;
-                                        }
-                                    } else if (c == 3) {
-                                        MY_SHIPS[3]--;
-                                    }
-                                } else if (count == 2) {
-                                    MY_SHIPS[1]--;
-                                }
-                            } else {
-                                can = false;
-                            }
-                        } else {
-                            can = false;
-                        }
-                        if (can ) {
-                            MY_MAP[elem.y][elem.x] = 1;
-                            ctx.fillStyle = "green";
-                            ctx.fillRect(x, y, widthSquare - 1, widthSquare - 1);
-                        }
-                    }
-                }
-            }
-            
-        }
+        } 
     }
 }
-function attack(ctx, map, enemyMap, enemyShips, elem) {
+function attack(ctx, map, EnemyMap, enemyShips, elem) {
     const widthSquare = 40;
     const x = OFFSET_FIELD + elem.x * widthSquare + elem.field * (400 + OFFSET_FIELD);
     const y = OFFSET_FIELD + elem.y * widthSquare;
 
-    if (GAME.move == false || GAME.move == true && enemyMap[elem.y][elem.x] != 1 && enemyMap[elem.y][elem.x] != -1) { //|| GAME.move == false
+    if (Game.move == false || Game.move == true && EnemyMap[elem.y][elem.x] != 1 && EnemyMap[elem.y][elem.x] != -1) { //|| Game.move == false
 
-        //console.log(enemyMap[elem.y][elem.x] , GAME.move);
+        //console.log(EnemyMap[elem.y][elem.x] , Game.move);
         if (map[elem.y][elem.x]) {
-            enemyMap[elem.y][elem.x] = 1;
-            markDiaganalElements(elem, enemyMap);
+            EnemyMap[elem.y][elem.x] = 1;
+            markDiaganalElements(elem, EnemyMap);
             const lengthShip = countShip(elem, map);
-            const len = countShip(elem, enemyMap);
+            const len = countShip(elem, EnemyMap);
             if (lengthShip == len) { //убили   
                 enemyShips[len]--;
                 //console.log(enemyShips);
                 if(isNull(enemyShips)) {
-                    (GAME.move) ? console.log("YOU WIN") : console.log("YOU LOST") ;
-                    GAME.finish = true;
+                    (Game.move) ? console.log("YOU WIN") : console.log("YOU LOST") ;
+                    Game.finish = true;
                 }
-                ctx.fillStyle = "red";
-                const coord = coordinateShip(elem, enemyMap);
+                //ctx.fillStyle = "red";
+                const coord = coordinateShip(elem, EnemyMap);
                 for(let i = 0; i < coord.length; i++) {
                     const diffX = (elem.x - coord[i].x) * widthSquare ;
                     const diffY = (elem.y - coord[i].y) * widthSquare;
-                    ctx.fillRect( x - diffX, y - diffY, widthSquare - 1, widthSquare - 1);
+                    EnemyMap[coord[i].y][coord[i].x] = KILLED;
+                   // ctx.fillRect( x - diffX, y - diffY, widthSquare - 1, widthSquare - 1);
                 }
-                if (GAME.move == false) {
-                    ENEMY_PREV_HIT.isHit = false;
+                if (Game.move == false) {
+                    EnemyPrevHit.isHit = false;
                 }
                 return true;
             } else {
-                ctx.fillStyle = "red";
-                ctx.strokeRect(x, y, widthSquare - 1, widthSquare - 1);
-                ctx.fillText("X", x + widthSquare / 2, y + widthSquare / 2);
-                if (GAME.move == false) {
-                    ENEMY_PREV_HIT.x = elem.x;
-                    ENEMY_PREV_HIT.y = elem.y;
-                    ENEMY_PREV_HIT.isHit = true;
+                //ctx.fillStyle = "red";
+                //ctx.strokeRect(x, y, widthSquare - 1, widthSquare - 1);
+                //ctx.fillText("X", x + widthSquare / 2, y + widthSquare / 2);
+                if (Game.move == false) {
+                    EnemyPrevHit.x = elem.x;
+                    EnemyPrevHit.y = elem.y;
+                    EnemyPrevHit.isHit = true;
                 }
                 return true;
             }
         } else {
-            enemyMap[elem.y][elem.x] = -1;
-            ctx.fillStyle = "black";
-            ctx.fillText(".", x + widthSquare / 2, y + widthSquare / 4);
-            elem.field = 2;
-            //GAME.move = !GAME.move;
+            EnemyMap[elem.y][elem.x] = MISS;
+           // ctx.fillStyle = "black";
+            //ctx.fillText(".", x + widthSquare / 2, y + widthSquare / 4);
             return false;
         }
     } else {
@@ -644,7 +955,7 @@ function attack(ctx, map, enemyMap, enemyShips, elem) {
     }
    
 }
-function check3(elem, map, search) {
+function checkShipLen(elem, map, search) {
     count = 0;
     let x = elem.x;
     let y = elem.y;
@@ -653,7 +964,7 @@ function check3(elem, map, search) {
         while (x < 9 && map[y][x + 1]) {
             x++;
             count2++;
-            if (count2 == search) return count2;
+            if (TYPE_SHIPS[count2]  == search) return TYPE_SHIPS[count2];
             if (count2 > count) {
                 count = count2;
             }
@@ -666,7 +977,7 @@ function check3(elem, map, search) {
         while (x > 0 && map[y][x - 1]) {
             x--;
             count2++;
-            if (count2 == search) return count2;
+            if (TYPE_SHIPS[count2] == search) return TYPE_SHIPS[count2];
             if (count2 > count) {
                 count = count2;
             }
@@ -679,7 +990,7 @@ function check3(elem, map, search) {
         while (y < 9 && map[y + 1][x]) {
             y++;
             count2++;
-            if (count2 == search) return count2;
+            if (TYPE_SHIPS[count2] == search) return TYPE_SHIPS[count2];
             if (count2 > count) {
                 count = count2;
             }
@@ -692,13 +1003,13 @@ function check3(elem, map, search) {
         while (y > 0 && map[y - 1][x]) {
             y--;
             count2++;
-            if (count2 == search) return count2;
+            if (TYPE_SHIPS[count2] == search) return TYPE_SHIPS[count2];
             if (count2 > count) {
                 count = count2;
             }
         }
     }
-    return count;
+    return TYPE_SHIPS[count];
 }
 function countShip(elem, map) {    
     let count = 1;
@@ -726,7 +1037,7 @@ function countShip(elem, map) {
         y--;
         count++;
     }
-    return count;
+    return TYPE_SHIPS[count];
 }
 function coordinateShip(elem, map) {    
     let el = [];
@@ -771,8 +1082,13 @@ function coordinateShip(elem, map) {
         };
         y--;
     }
+    el.sort(compareEl);
     return el;
 }
+function compareEl(a, b) {
+    if (a.x > b.x || a.y > b.y) return 1;
+    if (a.x < b.x || a.y < b.y) return -1;
+  }
 function checkDiaganalElements(elem, map) {
     let can = true;
     if (elem.y != 0 && elem.y != 9 && elem.x != 0 && elem.x != 9) {
@@ -798,6 +1114,15 @@ function checkDiaganalElements(elem, map) {
         }
     }
     return can;
+}
+function markAroundShip(coord, map) {
+    if (coord.length > 1) {
+        if (coord[0].x <  coord[1].x) { //корабль по горизонтали
+            if (coord[0].x != 0 && coord[0].y != 0) {
+                map[coord[0].x][coord[0].y] = -2
+            }
+        }
+    }
 }
 function markDiaganalElements(elem, map) {
     if (elem.y != 0 && elem.y != 9 && elem.x != 0 && elem.x != 9) {
