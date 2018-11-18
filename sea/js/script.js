@@ -474,7 +474,7 @@ const MAPS =[
 const num = getRandomInt(0, MAPS.length);
 console.log(MAPS.length, num);
 const MAP = MAPS[num];
-const MyMap = [
+var MyMap = [
     [0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0],
@@ -545,7 +545,8 @@ const EnemyPrevHit = {
     y: 0,
     isHit: false,
 }
-const NO_SHIP = -2;
+const NO_SHIP = -3;
+const NO_SHIP_INV = -2;
 const MISS = -1;
 const HAVE_SHIP = 1;
 const KILLED = 2;
@@ -557,6 +558,12 @@ const ENEMY_FIELD = 1;
 const WIDTH_SQUARE = 40;
 const MY_MOVE = true;
 const ENEMY_MOVE = false;
+const CHECK_ALL_WAY = {
+    left:   {y: 0, x: -1},
+    right:  {y: 0, x: 1},
+    up:     {y: -1, x: 0},
+    down:   {y: 1, x: 0}
+}
 function main () {    
     const canvas = document.getElementById('canvas');
     const WIDTH = 1000;
@@ -623,11 +630,26 @@ function drawSquare(ctx, x, y, state) {
         case KILLED:
             drawKilledSquare(ctx, x, y);
             break;
-        //case EMPTY: 
-           // drawEmptySquare(ctx, x, y); 
+        case NO_SHIP:
+            drawNoShipSquare(ctx, x, y);
+            break;
+        case -2:
+            drawNoShipSquare2(ctx, x, y);
+            break;
     }
 }
-function drawKilledSquare(ctx, x, y){
+function drawNoShipSquare2(ctx, x, y) {
+    ctx.fillStyle = "black";
+    ctx.font = "regular 20pt Arial";
+    ctx.fillText("!", x + WIDTH_SQUARE / 2, y + WIDTH_SQUARE / 2);
+}
+function drawNoShipSquare(ctx, x, y) {
+    drawEmptySquare(ctx, x, y);
+    ctx.fillStyle = "black";
+    ctx.font = "regular 20pt Arial";
+    ctx.fillText("-", x + WIDTH_SQUARE / 2, y + WIDTH_SQUARE / 2);
+}
+function drawKilledSquare(ctx, x, y) {
     ctx.fillStyle = "red";
     ctx.fillRect(x, y , WIDTH_SQUARE - 1, WIDTH_SQUARE - 1);
 }
@@ -641,6 +663,7 @@ function drawDeckSquare(ctx, x, y) {
 }
 function drawHitSquare(ctx, x, y) {
     ctx.fillStyle = "red";
+    ctx.font = "bold 30pt Arial";
     ctx.strokeRect(x, y, WIDTH_SQUARE - 1, WIDTH_SQUARE - 1);
     ctx.fillText("X", x + WIDTH_SQUARE / 2, y + WIDTH_SQUARE / 2);    
 }
@@ -654,20 +677,25 @@ function checkShips() {
     console.log(MAX_SHIPS, MyShips);
     if (isEqualShips(MAX_SHIPS, MyShips)) {        
         Game.placement = false;
-        Game.move = true;
+        let firstMove = getRandomInt(0, 2);
+        if (firstMove == 0) {
+            Game.move = MY_MOVE;
+        }  else {
+            Game.move = ENEMY_MOVE;
+            enemyMove();
+        } 
     } else {
-        alert('не установленны корабли !!!');
+        if (Game.placement == true) {
+            alert('не установленны корабли !!!');
+        }
     }
 }
-function enemyMove(ctx) {
+function enemyMove() {
     let elem = AI();
-    const hit = attack(ctx, MyMap, EnemyMoves, MyShips, elem);
+    const hit = handlerAttack(MyMap, EnemyMoves, MyShips, elem);
     if (hit) {
-        enemyMove(ctx, elem);
-    } else {
-        Game.move = !Game.move;
-    }
-
+        enemyMove(elem);
+    } 
 }
 function killShip(el, enemyMove) {
     let x = el.x;
@@ -773,21 +801,20 @@ function isEqualShips(obj1, obj2) {
 }
 function updateField(event) {
     const mousePos = mouseCoordinates(canvas, event);
-    const ctx = canvas.getContext('2d');
     const elem = searchElem(mousePos, 400);
-    updateOneField(ctx, elem);
+    if (elem != null) {
+        updateOneField(elem);
+    }
 }
 function searchElem(mouseCoordinates, boxWidth) {
     const widthSquare = boxWidth / 10;
     for (let field = 0; field < 2; field++) {
-        for (let y = 0; y < 10; y++) {
-            for (let x = 0; x < 10; x++) {
-                //console.log(x * widthSquare, y * widthSquare, mouseCoordinates.x, mouseCoordinates.y);
+        for (let y = BEGIN_FIELD; y <= END_FIELD; y++) {
+            for (let x = BEGIN_FIELD; x <= END_FIELD; x++) {
                 if ((x * widthSquare + (boxWidth + OFFSET_FIELD) * field  <= mouseCoordinates.x) && 
                     (y * widthSquare <= mouseCoordinates.y) && 
                     (x * widthSquare + widthSquare + (boxWidth + OFFSET_FIELD) * field > mouseCoordinates.x) && 
                     (y * widthSquare + widthSquare > mouseCoordinates.y)) {
-                        //console.log(x * widthSquare + OFFSET_FIELD + (boxWidth + OFFSET_FIELD) * field,  mouseCoordinates, x * widthSquare + widthSquare + OFFSET_FIELD + (boxWidth + OFFSET_FIELD) * field, field);
                         return {
                             field,
                             x,
@@ -796,37 +823,15 @@ function searchElem(mouseCoordinates, boxWidth) {
                     }
             }
         }
-    }
-    
-    return false;
+    }    
+    return null;
 }
 function removeDesk(map, ships, elem) {
     map[elem.y][elem.x] = EMPTY;
-    const typeShip = countShip(elem, map);                     
-    const lengthShip  = checkShipLen(elem, map, typeShip); 
-    ships[typeShip]--;
-    if (typeShip == 'fourDesk') {
-        if (lengthShip == 'threeDesk') {
-            ships.threeDesk++;
-        }
-        if (lengthShip == 'twoDesk') {
-            ships.twoDesk++;
-            ships.oneDesk++;
-        }   
-    }
-    if (typeShip == 'threeDesk') {
-        if (lengthShip == 'oneDesk') {
-            ships.oneDesk += 2;
-        } 
-        if (lengthShip == 'twoDesk'){
-            ships.twoDesk++;
-        }
-    }
-    if (typeShip == 'twoDesk') {
-        ships.oneDesk++;
-    } 
-    //ctx.fillStyle = "#808080";
-    //ctx.fillRect(x, y, 39, 39);
+    const typePrevShip = countShip(elem, map);                     
+    const lengthCurShip  = checkShipLen(elem, map, typePrevShip); 
+    ships[typePrevShip]--;
+    addCurTypeShips(typePrevShip, lengthCurShip, ships);
 }
 function addShip(map, ships, elem) {
     if (checkDiaganalElements(elem, map)) {
@@ -840,6 +845,28 @@ function addShip(map, ships, elem) {
             } 
         } 
     }
+}
+function addCurTypeShips(typePrevShip, lenCurShip, ships) {
+    if (typePrevShip == 'fourDesk') {
+        if (lenCurShip == 'threeDesk') {
+            ships.threeDesk++;
+        }
+        if (lenCurShip == 'twoDesk') {
+            ships.twoDesk++;
+            ships.oneDesk++;
+        }   
+    }
+    if (typePrevShip == 'threeDesk') {
+        if (lenCurShip == 'oneDesk') {
+            ships.oneDesk += 2;
+        } 
+        if (lenCurShip == 'twoDesk'){
+            ships.twoDesk++;
+        }
+    }
+    if (typePrevShip == 'twoDesk') {
+        ships.oneDesk++;
+    } 
 }
 function removePrevTypeShips(typeShip, lenPrevShip, ships) {
     if (typeShip == 'threeDesk' || typeShip == 'fourDesk') {
@@ -857,29 +884,36 @@ function removePrevTypeShips(typeShip, lenPrevShip, ships) {
         ships.oneDesk--;
     }
 }
-function updateOneField(ctx, elem) {
-    if (elem) {
-        if(Game.placement && elem.field == MY_FIELD) {
-            (MyMap[elem.y][elem.x] == HAVE_SHIP) ? removeDesk(MyMap, MyShips, elem): addShip(MyMap, MyShips, elem);
+function updateOneField(elem) {
+    if(Game.placement) {
+        if (elem.field == ENEMY_FIELD && elem.x >= 7 && elem.y >= 7) {
+            MyMap = getRandomMaps();
+            MyShips.oneDesk = 4;
+            MyShips.twoDesk = 3;
+            MyShips.threeDesk = 2;
+            MyShips.fourDesk = 1;
         }
-        if(elem.field == ENEMY_FIELD) { //конст
-            if (Game.move == MY_MOVE) {
-                if(!Game.finish) {
-                    let hit = attack(ctx, MAP, EnemyMap, EnemyShips, elem);
-                    if (!hit) {
-                        Game.move = !Game.move;
-                        enemyMove(ctx);
-                    }
-                }
-            }
-        } 
-    }
+        updateFieldWhenPlacing(MyMap, MyShips, elem);
+    } else if(elem.field == ENEMY_FIELD && Game.move == MY_MOVE && !Game.finish) { 
+        let hit = handlerAttack(MAP, EnemyMap, EnemyShips, elem);
+        if (!hit) {
+            enemyMove();
+        }
+    } 
 }
-function attack(ctx, map, EnemyMap, enemyShips, elem) {
-    const widthSquare = 40;
-    const x = OFFSET_FIELD + elem.x * widthSquare + elem.field * (400 + OFFSET_FIELD);
-    const y = OFFSET_FIELD + elem.y * widthSquare;
+function getRandomMaps() {
+    const num = getRandomInt(0, MAPS.length);
+    return MAPS[num];
+}
+function updateFieldWhenGaming(MAP, EnemyMap, EnemyShips, elem) {
 
+}
+function updateFieldWhenPlacing(map, ships, elem) {
+   if (elem.field == MY_FIELD) {
+        (map[elem.y][elem.x] == HAVE_SHIP) ? removeDesk(map, ships, elem): addShip(map, ships, elem);
+   }
+}
+/*function attack(map, EnemyMap, enemyShips, elem) { //map вражеская
     if (Game.move == ENEMY_MOVE || Game.move == MY_MOVE && EnemyMap[elem.y][elem.x] == EMPTY) { //|| Game.move == false
         if (map[elem.y][elem.x] == HAVE_SHIP) {
             EnemyMap[elem.y][elem.x] = HAVE_SHIP;
@@ -888,12 +922,10 @@ function attack(ctx, map, EnemyMap, enemyShips, elem) {
             const len = countShip(elem, EnemyMap);
             if (lengthShip == len) { //убили   
                 enemyShips[len]--;
-                //console.log(enemyShips);
                 if(isNull(enemyShips)) {
                     (Game.move) ? console.log("YOU WIN") : console.log("YOU LOST") ;
                     Game.finish = true;
                 }
-                //ctx.fillStyle = "red";
                 const coord = coordinateShip(elem, EnemyMap);
                 for(let i = 0; i < coord.length; i++) {
                     EnemyMap[coord[i].y][coord[i].x] = KILLED;
@@ -903,9 +935,6 @@ function attack(ctx, map, EnemyMap, enemyShips, elem) {
                 }
                 return true;
             } else {
-                //ctx.fillStyle = "red";
-                //ctx.strokeRect(x, y, widthSquare - 1, widthSquare - 1);
-                //ctx.fillText("X", x + widthSquare / 2, y + widthSquare / 2);
                 if (Game.move == ENEMY_MOVE) {
                     EnemyPrevHit.x = elem.x;
                     EnemyPrevHit.y = elem.y;
@@ -915,13 +944,119 @@ function attack(ctx, map, EnemyMap, enemyShips, elem) {
             }
         } else {   
             EnemyMap[elem.y][elem.x] = MISS;
-           // ctx.fillStyle = "black";
-            //ctx.fillText(".", x + widthSquare / 2, y + widthSquare / 4);
             return false;
         }
     } else {
         return true;
     }   
+} */
+function handlerAttack(enemyMap, myMovesMap, enemyShips, elem) { 
+    const shotCondition = checkHit(enemyMap, myMovesMap, enemyShips, elem);
+    if (shotCondition == KILLED) {
+        markKilledShip(elem, myMovesMap);        
+        if (Game.move == ENEMY_MOVE) {
+            EnemyPrevHit.isHit = false;
+        }
+    } else if (shotCondition == HAVE_SHIP) {
+        markWhenWounded(elem, myMovesMap);
+        if (Game.move == ENEMY_MOVE) {
+            EnemyPrevHit.x = elem.x;
+            EnemyPrevHit.y = elem.y;
+            EnemyPrevHit.isHit = true;
+        }
+    } else if (shotCondition == MISS) {
+        myMovesMap[elem.y][elem.x] = MISS;
+        Game.move = !Game.move;
+        return false;
+    }
+    return true;
+}
+function checkHit(enemyMap, myMovesMap, ships, elem) {
+    if (enemyMap[elem.y][elem.x] == HAVE_SHIP) {
+        const lengthShip = countShip(elem, enemyMap);
+        const len = countShip(elem, myMovesMap);
+        if (len == lengthShip) {
+            ships[len]--;
+            if(isNull(ships)) {
+                (Game.move == MY_MOVE) ? alert("YOU WIN") : alert("YOU LOST") ;
+                Game.finish = true;
+            }
+            return KILLED;
+        } else {
+            return HAVE_SHIP;
+        }
+    } else {
+        return MISS;
+    }
+}
+function markHorizontalShipOrOneDeckShip(coord, map) {
+    let i = 0;
+    let lenShip = coord.length;
+    if (coord[i].x != BEGIN_FIELD) {
+        markHorizontalElem(map, coord[i].y, coord[i].x - 1);
+    }
+    while(i < lenShip) {
+        map[coord[i].y][coord[i].x] = KILLED;
+        markHorizontalElem(map, coord[i].y, coord[i].x);
+        i++;
+    }
+    if (coord[i - 1].x != END_FIELD) {
+        markHorizontalElem(map, coord[i - 1].y, coord[i - 1].x + 1);
+    }
+}
+function markVerticalShip(coord, map) {
+    let i = 0;
+    let lenShip = coord.length;
+    if (coord[i].y != BEGIN_FIELD) {
+        markVerticalElem(map, coord[i].y -  1, coord[i].x);
+    }
+    while(i < lenShip) {
+        map[coord[i].y][coord[i].x] = KILLED;
+        markVerticalElem(map, coord[i].y, coord[i].x);
+        i++;
+    }
+    if (coord[i - 1].y != END_FIELD) {
+        markVerticalElem(map, coord[i - 1].y + 1, coord[i - 1].x);
+    }
+}
+function markHorizontalElem(map, y, x) {
+    if (map[y][x] == EMPTY || map[y][x] == NO_SHIP_INV) {
+        map[y][x] = NO_SHIP;
+    }
+    if (y != BEGIN_FIELD && (map[y - 1][x] == EMPTY || map[y - 1][x] == NO_SHIP_INV))  {
+        map[y - 1][x] = NO_SHIP;
+    }
+    if (y != END_FIELD && (map[y + 1][x] == EMPTY || map[y + 1][x] == NO_SHIP_INV)) {
+        map[y + 1][x] = NO_SHIP;
+    }
+}
+function markVerticalElem(map, y, x) {
+    if (map[y][x] == EMPTY || map[y][x] == NO_SHIP_INV) {
+        map[y][x] = NO_SHIP;
+    }
+    if (x != BEGIN_FIELD && (map[y][x - 1] == EMPTY || map[y][x - 1] == NO_SHIP_INV)) {
+        map[y][x - 1] = NO_SHIP;
+    }
+    if (x != END_FIELD && (map[y][x + 1] == EMPTY || map[y][x + 1] == NO_SHIP_INV)) {
+        map[y][x + 1] = NO_SHIP;
+    }
+}
+function markWhenWounded(elem, map) {
+    map[elem.y][elem.x] = HAVE_SHIP;
+    markDiaganalElements(elem, map);
+}
+function markKilledShip(elem, map) {
+    const coord = coordinateShip(elem, map);
+    if (isVertical(coord)) {
+        markVerticalShip(coord, map);
+    } else {
+        markHorizontalShipOrOneDeckShip(coord, map); 
+    }
+}
+function isVertical(coord) {
+    let i = 0;
+    let lenShip = coord.length;
+    return lenShip > 1 && coord[i].y < coord[i + 1].y;
 }
 function checkShipLen(elem, map, search) {
     count = 0;
@@ -980,34 +1115,17 @@ function checkShipLen(elem, map, search) {
     return TYPE_SHIPS[count];
 }
 function countShip(elem, map) {    
-    const checkAllWay = {
-        left: {
-            y: 0,
-            x: -1
-        },
-        right: {
-            y: 0,
-            x: 1
-        },
-        up: {
-            y: -1,
-            x: 0
-        },
-        down: {
-            y: 1,
-            x: 0
-        }
-    }
+
     let count = 1;
     let x;
     let y;
 
-    for (const key of Object.keys(checkAllWay)) {
-        x = elem.x + checkAllWay[key].x;
-        y = elem.y + checkAllWay[key].y;
+    for (const key of Object.keys(CHECK_ALL_WAY)) {
+        x = elem.x + CHECK_ALL_WAY[key].x;
+        y = elem.y + CHECK_ALL_WAY[key].y;
         while (y >= 0 && y <= 9 && x >= 0 && x <= 9 && map[y][x] == 1) {
-            y = y + checkAllWay[key].y;
-            x = x + checkAllWay[key].x;
+            y = y + CHECK_ALL_WAY[key].y;
+            x = x + CHECK_ALL_WAY[key].x;
             count++;
         }
     }
@@ -1093,15 +1211,6 @@ function checkDiaganalElements(elem, map) {
     }
     return can;
 }
-function markAroundShip(coord, map) {
-    if (coord.length > 1) {
-        if (coord[0].x <  coord[1].x) { //корабль по горизонтали
-            if (coord[0].x != 0 && coord[0].y != 0) {
-                map[coord[0].x][coord[0].y] = -2
-            }
-        }
-    }
-}
 function markDiaganalElements(elem, map) {
     if (elem.y != 0 && elem.y != 9 && elem.x != 0 && elem.x != 9) {
         if (map[elem.y + 1][elem.x + 1] == 0) map[elem.y + 1][elem.x + 1] = -2;
@@ -1159,7 +1268,6 @@ function createField(ctx, Width,  Height) {
     createOneField(ctx, x * 2 + boxWidth, y, boxWidth);
 }
 function mouseCoordinates(canvas, event){
-    //let margin = canvas.getBoundingClientRect();
     let tempX = event.pageX - canvas.offsetLeft;
     let tempY = event.pageY - canvas.offsetTop;
     return {
