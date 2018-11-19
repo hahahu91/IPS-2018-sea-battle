@@ -903,7 +903,27 @@ function updateOneField(elem) {
 }
 function getRandomMaps() {
     const num = getRandomInt(0, MAPS.length);
-    return MAPS[num];
+    let map = MAPS[num];
+    const reverse = getRandom(0, 4);
+    switch (reverse) {
+        case 0: 
+            reverseX(map);
+        case 1:
+            reverseY(map);
+            break;
+        case 2: 
+            reverseX(map);
+        // case 3: оставляем как есть
+    }
+    return map;
+}
+function reverseX(map) {
+    for (let i = 0; i < map.length; i++) {
+        map[i].reverse();
+    }
+}
+function reverseY(map) {
+    map.reverse();
 }
 function updateFieldWhenGaming(MAP, EnemyMap, EnemyShips, elem) {
 
@@ -913,50 +933,17 @@ function updateFieldWhenPlacing(map, ships, elem) {
         (map[elem.y][elem.x] == HAVE_SHIP) ? removeDesk(map, ships, elem): addShip(map, ships, elem);
    }
 }
-/*function attack(map, EnemyMap, enemyShips, elem) { //map вражеская
-    if (Game.move == ENEMY_MOVE || Game.move == MY_MOVE && EnemyMap[elem.y][elem.x] == EMPTY) { //|| Game.move == false
-        if (map[elem.y][elem.x] == HAVE_SHIP) {
-            EnemyMap[elem.y][elem.x] = HAVE_SHIP;
-            markDiaganalElements(elem, EnemyMap);
-            const lengthShip = countShip(elem, map);
-            const len = countShip(elem, EnemyMap);
-            if (lengthShip == len) { //убили   
-                enemyShips[len]--;
-                if(isNull(enemyShips)) {
-                    (Game.move) ? console.log("YOU WIN") : console.log("YOU LOST") ;
-                    Game.finish = true;
-                }
-                const coord = coordinateShip(elem, EnemyMap);
-                for(let i = 0; i < coord.length; i++) {
-                    EnemyMap[coord[i].y][coord[i].x] = KILLED;
-                }
-                if (Game.move == false) {
-                    EnemyPrevHit.isHit = false;
-                }
-                return true;
-            } else {
-                if (Game.move == ENEMY_MOVE) {
-                    EnemyPrevHit.x = elem.x;
-                    EnemyPrevHit.y = elem.y;
-                    EnemyPrevHit.isHit = true;
-                }
-                return true;
-            }
-        } else {   
-            EnemyMap[elem.y][elem.x] = MISS;
-            return false;
-        }
-    } else {
-        return true;
-    }   
-} */
 function handlerAttack(enemyMap, myMovesMap, enemyShips, elem) { 
     const shotCondition = checkHit(enemyMap, myMovesMap, enemyShips, elem);
     if (shotCondition == KILLED) {
         markKilledShip(elem, myMovesMap);        
         if (Game.move == ENEMY_MOVE) {
             EnemyPrevHit.isHit = false;
-        }
+        };
+        if(isNull(enemyShips)) {
+            (Game.move == MY_MOVE) ? alert("YOU WIN") : alert("YOU LOST") ;
+            Game.finish = true;
+        };
     } else if (shotCondition == HAVE_SHIP) {
         markWhenWounded(elem, myMovesMap);
         if (Game.move == ENEMY_MOVE) {
@@ -977,10 +964,6 @@ function checkHit(enemyMap, myMovesMap, ships, elem) {
         const len = countShip(elem, myMovesMap);
         if (len == lengthShip) {
             ships[len]--;
-            if(isNull(ships)) {
-                (Game.move == MY_MOVE) ? alert("YOU WIN") : alert("YOU LOST") ;
-                Game.finish = true;
-            }
             return KILLED;
         } else {
             return HAVE_SHIP;
