@@ -564,6 +564,12 @@ const CHECK_ALL_WAY = {
     up:     {y: -1, x: 0},
     down:   {y: 1, x: 0}
 }
+const CHECK_ALL_DIAGANAL_WAY = {
+    leftTop:    {y: -1, x: -1},
+    rightTop:   {y: -1, x: 1},
+    leftDown:   {y: 1, x: -1},
+    rightDown:  {y: 1, x: 1} 
+}
 function main () {    
     const canvas = document.getElementById('canvas');
     const WIDTH = 1000;
@@ -599,7 +605,7 @@ function drawMap (ctx, map, field) {
     ctx.textBaseline = "middle";
     const boxWidth = 400;
     for(let i = 0; i < map.length; i++){
-        for (let j = 0; j < map[i].length; j++){
+        for (let j = 0; j < map[i].length; j++) {
             const x = OFFSET_FIELD + j * WIDTH_SQUARE + field * (boxWidth + OFFSET_FIELD);
             const y = OFFSET_FIELD + i * WIDTH_SQUARE;
             if (Game.placement) {
@@ -644,9 +650,9 @@ function drawNoShipSquare2(ctx, x, y) {
     ctx.fillText("!", x + WIDTH_SQUARE / 2, y + WIDTH_SQUARE / 2);
 }
 function drawNoShipSquare(ctx, x, y) {
-    drawEmptySquare(ctx, x, y);
+    drawEmptySquareWithoutFrame(ctx, x, y);
     ctx.fillStyle = "black";
-    ctx.font = "regular 20pt Arial";
+    ctx.font = "Regular 20pt Arial";
     ctx.fillText("-", x + WIDTH_SQUARE / 2, y + WIDTH_SQUARE / 2);
 }
 function drawKilledSquare(ctx, x, y) {
@@ -654,6 +660,7 @@ function drawKilledSquare(ctx, x, y) {
     ctx.fillRect(x, y , WIDTH_SQUARE - 1, WIDTH_SQUARE - 1);
 }
 function drawMissedSquare(ctx, x, y) {
+    drawEmptySquareWithoutFrame(ctx, x, y);
     ctx.fillStyle = "black";
     ctx.fillText(".", x + WIDTH_SQUARE / 2, y + WIDTH_SQUARE / 4);
 }
@@ -667,14 +674,18 @@ function drawHitSquare(ctx, x, y) {
     ctx.strokeRect(x, y, WIDTH_SQUARE - 1, WIDTH_SQUARE - 1);
     ctx.fillText("X", x + WIDTH_SQUARE / 2, y + WIDTH_SQUARE / 2);    
 }
-function drawEmptySquare (ctx, x, y) {
+function drawEmptySquare(ctx, x, y) {
     ctx.fillStyle = "#808080";
     ctx.strokeStyle = "#000";
     ctx.strokeRect(x , y, WIDTH_SQUARE, WIDTH_SQUARE);
     ctx.fillRect(x, y, WIDTH_SQUARE, WIDTH_SQUARE);
 }
+function drawEmptySquareWithoutFrame(ctx, x, y) {
+    ctx.fillStyle = "#808080";
+    ctx.strokeStyle = "#000";
+    ctx.fillRect(x, y, WIDTH_SQUARE - 1, WIDTH_SQUARE - 1);
+}
 function checkShips() {
-    console.log(MAX_SHIPS, MyShips);
     if (isEqualShips(MAX_SHIPS, MyShips)) {        
         Game.placement = false;
         let firstMove = getRandomInt(0, 2);
@@ -692,10 +703,12 @@ function checkShips() {
 }
 function enemyMove() {
     let elem = AI();
-    const hit = handlerAttack(MyMap, EnemyMoves, MyShips, elem);
-    if (hit) {
-        enemyMove(elem);
-    } 
+    if (!Game.finish) {
+        const hit = handlerAttack(MyMap, EnemyMoves, MyShips, elem);
+        if (hit) {
+            enemyMove(elem);
+        } 
+    }
 }
 function killShip(el, enemyMove) {
     let x = el.x;
@@ -704,13 +717,13 @@ function killShip(el, enemyMove) {
         do {
             x++;
         } while (enemyMove[y][x] == HAVE_SHIP && x != END_FIELD);
-        if (enemyMove[y][x] != 0) {
+        if (enemyMove[y][x] != EMPTY) {
             x = el.x;
         } else {
             return {
                 x: x,
                 y: y,
-                field: 0,
+                field: MY_FIELD,
             }
         }
     }
@@ -718,13 +731,13 @@ function killShip(el, enemyMove) {
         do {
             y++;
         } while (enemyMove[y][x] == HAVE_SHIP && y != END_FIELD);
-        if (enemyMove[y][x] != 0) {
+        if (enemyMove[y][x] != EMPTY) {
             y = el.y;
         } else {
             return {
                 x: x,
                 y: y,
-                field: 0,
+                field: MY_FIELD,
             }
         }
     }
@@ -732,13 +745,13 @@ function killShip(el, enemyMove) {
         do {
             x--;
         } while (enemyMove[y][x] == HAVE_SHIP && x != BEGIN_FIELD);
-        if (enemyMove[y][x] != 0) {
+        if (enemyMove[y][x] != EMPTY) {
             x = el.x;
         } else {
             return {
                 x: x,
                 y: y,
-                field: 0,
+                field: MY_FIELD,
             }
         }
     }
@@ -768,8 +781,7 @@ function AI() {
         y: 0,
         field: 0,
     };
-    
-    do { //переименовать
+    do { 
         if (EnemyPrevHit.isHit) { //ранение было добиваем 
             el = killShip(EnemyPrevHit, EnemyMoves);            
         } else {
@@ -829,7 +841,7 @@ function searchElem(mouseCoordinates, boxWidth) {
 function removeDesk(map, ships, elem) {
     map[elem.y][elem.x] = EMPTY;
     const typePrevShip = countShip(elem, map);                     
-    const lengthCurShip  = checkShipLen(elem, map, typePrevShip); 
+    const lengthCurShip  = mostPartOfShip(elem, map, typePrevShip); 
     ships[typePrevShip]--;
     addCurTypeShips(typePrevShip, lengthCurShip, ships);
 }
@@ -840,7 +852,7 @@ function addShip(map, ships, elem) {
             if (!isEqualShips(ships, MAX_SHIPS)) {
                 map[elem.y][elem.x] = HAVE_SHIP;
                 ships[typeShip]++;
-                const lenPrevShip  = checkShipLen(elem, map, typeShip);
+                const lenPrevShip  = mostPartOfShip(elem, map, typeShip);
                 removePrevTypeShips(typeShip, lenPrevShip, ships);
             } 
         } 
@@ -879,7 +891,7 @@ function removePrevTypeShips(typeShip, lenPrevShip, ships) {
             }
         } else if (lenPrevShip == 'threeDesk') {
             ships.threeDesk--;
-        }
+        };
     } else if (typeShip == 'twoDesk') {
         ships.oneDesk--;
     }
@@ -895,7 +907,7 @@ function updateOneField(elem) {
         }
         updateFieldWhenPlacing(MyMap, MyShips, elem);
     } else if(elem.field == ENEMY_FIELD && Game.move == MY_MOVE && !Game.finish) { 
-        let hit = handlerAttack(MAP, EnemyMap, EnemyShips, elem);
+        const hit = handlerAttack(MAP, EnemyMap, EnemyShips, elem);
         if (!hit) {
             enemyMove();
         }
@@ -904,7 +916,7 @@ function updateOneField(elem) {
 function getRandomMaps() {
     const num = getRandomInt(0, MAPS.length);
     let map = MAPS[num];
-    const reverse = getRandom(0, 4);
+    const reverse = getRandomInt(0, 4);
     switch (reverse) {
         case 0: 
             reverseX(map);
@@ -925,9 +937,6 @@ function reverseX(map) {
 function reverseY(map) {
     map.reverse();
 }
-function updateFieldWhenGaming(MAP, EnemyMap, EnemyShips, elem) {
-
-}
 function updateFieldWhenPlacing(map, ships, elem) {
    if (elem.field == MY_FIELD) {
         (map[elem.y][elem.x] == HAVE_SHIP) ? removeDesk(map, ships, elem): addShip(map, ships, elem);
@@ -935,28 +944,37 @@ function updateFieldWhenPlacing(map, ships, elem) {
 }
 function handlerAttack(enemyMap, myMovesMap, enemyShips, elem) { 
     const shotCondition = checkHit(enemyMap, myMovesMap, enemyShips, elem);
+    if (Game.move == ENEMY_MOVE) {
+        enemyHitHandler(shotCondition, elem);
+    }
     if (shotCondition == KILLED) {
         markKilledShip(elem, myMovesMap);        
-        if (Game.move == ENEMY_MOVE) {
-            EnemyPrevHit.isHit = false;
-        };
         if(isNull(enemyShips)) {
-            (Game.move == MY_MOVE) ? alert("YOU WIN") : alert("YOU LOST") ;
-            Game.finish = true;
+            finishGame();   
         };
     } else if (shotCondition == HAVE_SHIP) {
         markWhenWounded(elem, myMovesMap);
-        if (Game.move == ENEMY_MOVE) {
-            EnemyPrevHit.x = elem.x;
-            EnemyPrevHit.y = elem.y;
-            EnemyPrevHit.isHit = true;
-        }
     } else if (shotCondition == MISS) {
         myMovesMap[elem.y][elem.x] = MISS;
         Game.move = !Game.move;
         return false;
     }
     return true;
+}
+function enemyHitHandler(shotCondition, elem) {
+    if (shotCondition == KILLED) {
+        EnemyPrevHit.isHit = false;
+    } else if (shotCondition == HAVE_SHIP) {
+        EnemyPrevHit.x = elem.x;
+        EnemyPrevHit.y = elem.y;
+        EnemyPrevHit.isHit = true;
+    }
+}
+function finishGame() {
+    setTimeout(function() { 
+        (Game.move == ENEMY_MOVE) ? alert("YOU LOST") : alert("YOU WIN");
+    }, 100);  
+    Game.finish = true;       
 }
 function checkHit(enemyMap, myMovesMap, ships, elem) {
     if (enemyMap[elem.y][elem.x] == HAVE_SHIP) {
@@ -1041,71 +1059,12 @@ function isVertical(coord) {
     let lenShip = coord.length;
     return lenShip > 1 && coord[i].y < coord[i + 1].y;
 }
-function checkShipLen(elem, map, search) {
-    count = 0;
-    let x = elem.x;
-    let y = elem.y;
-    if (x < 9 && map[y][x + 1]) {
-        let count2 = 0;
-        while (x < 9 && map[y][x + 1]) {
-            x++;
-            count2++;
-            if (TYPE_SHIPS[count2]  == search) return TYPE_SHIPS[count2];
-            if (count2 > count) {
-                count = count2;
-            }
-        }
-    }
-    x = elem.x;
-    y = elem.y;
-    if (x > 0 && map[y][x - 1]) {
-        count2 = 0;
-        while (x > 0 && map[y][x - 1]) {
-            x--;
-            count2++;
-            if (TYPE_SHIPS[count2] == search) return TYPE_SHIPS[count2];
-            if (count2 > count) {
-                count = count2;
-            }
-        }
-    }
-    x = elem.x;
-    y = elem.y;
-    if (y < 9 && map[y + 1][x]) {
-        count2 = 0;
-        while (y < 9 && map[y + 1][x]) {
-            y++;
-            count2++;
-            if (TYPE_SHIPS[count2] == search) return TYPE_SHIPS[count2];
-            if (count2 > count) {
-                count = count2;
-            }
-        }
-    }
-    x = elem.x;
-    y = elem.y;
-    if (y > 0 && map[y - 1][x]) {
-        count2 = 0;
-        while (y > 0 && map[y - 1][x]) {
-            y--;
-            count2++;
-            if (TYPE_SHIPS[count2] == search) return TYPE_SHIPS[count2];
-            if (count2 > count) {
-                count = count2;
-            }
-        }
-    }
-    return TYPE_SHIPS[count];
-}
 function countShip(elem, map) {    
-
     let count = 1;
-    let x;
-    let y;
 
     for (const key of Object.keys(CHECK_ALL_WAY)) {
-        x = elem.x + CHECK_ALL_WAY[key].x;
-        y = elem.y + CHECK_ALL_WAY[key].y;
+        let x = elem.x + CHECK_ALL_WAY[key].x;
+        let y = elem.y + CHECK_ALL_WAY[key].y;
         while (y >= 0 && y <= 9 && x >= 0 && x <= 9 && map[y][x] == 1) {
             y = y + CHECK_ALL_WAY[key].y;
             x = x + CHECK_ALL_WAY[key].x;
@@ -1118,48 +1077,46 @@ function countShip(elem, map) {
         return null;
     }
 }
+function mostPartOfShip(elem, map, search) {    
+    let count = 0;
+    for (const key of Object.keys(CHECK_ALL_WAY)) {
+        let x = elem.x + CHECK_ALL_WAY[key].x;
+        let y = elem.y + CHECK_ALL_WAY[key].y;
+        let curLen = 0;
+        while (y >= 0 && y <= 9 && x >= 0 && x <= 9 && map[y][x] == 1) {
+            y = y + CHECK_ALL_WAY[key].y;
+            x = x + CHECK_ALL_WAY[key].x;
+            curLen++;
+        }
+        if (curLen > count) {
+            count = curLen;
+        }
+        if (TYPE_SHIPS[count] == search) return TYPE_SHIPS[count];
+    }
+    if (count >= 1 && count <= 4) {
+        return TYPE_SHIPS[count];
+    } else {
+        return null;
+    }
+}
 function coordinateShip(elem, map) {    
     let el = [];
     let count = 0;
-    let x = elem.x;
-    let y = elem.y;
     el[count++] = {
-        y: y,
-        x: x,
+        y: elem.y,
+        x: elem.x,
     };
-    while (x < 9 && map[y][x + 1] == 1) {
-        el[count++] = {
-            y: y,
-            x: x + 1,
-        };
-        x++;
-    }
-    x = elem.x;
-    y = elem.y;
-    while (x > 0 && map[y][x - 1] == 1) {
-        el[count++] = {
-            y: y,
-            x: x - 1,
-        };
-        x--;
-    }
-    x = elem.x;
-    y = elem.y;
-    while (y < 9 && map[y + 1][x] == 1) {
-        el[count++] = {
-            y: y + 1,
-            x: x
-        };
-        y++;
-    }
-    x = elem.x;
-    y = elem.y;
-    while (y > 0 && map[y - 1][x] == 1) {
-        el[count++] = {
-            y: y - 1,
-            x: x
-        };
-        y--;
+    for (const key of Object.keys(CHECK_ALL_WAY)) {
+        let x = elem.x + CHECK_ALL_WAY[key].x;
+        let y = elem.y + CHECK_ALL_WAY[key].y;
+        while (y >= 0 && y <= 9 && x >= 0 && x <= 9 && map[y][x] == 1) {
+            el[count++] = {
+                y: y,
+                x: x,
+            };
+            y = y + CHECK_ALL_WAY[key].y;
+            x = x + CHECK_ALL_WAY[key].x;
+        }
     }
     el.sort(compareEl);
     return el;
@@ -1168,60 +1125,24 @@ function compareEl(a, b) {
     if (a.x > b.x || a.y > b.y) return 1;
     if (a.x < b.x || a.y < b.y) return -1;
   }
-function checkDiaganalElements(elem, map) {
-    let can = true;
-    if (elem.y != 0 && elem.y != 9 && elem.x != 0 && elem.x != 9) {
-        if (map[elem.y + 1][elem.x + 1] || map[elem.y + 1][elem.x - 1] || 
-            map[elem.y - 1][elem.x + 1] || map[elem.y - 1][elem.x - 1]) can = false;
-    } else {
-        if (elem.y == 0 && elem.x == 0) {
-            if (map[elem.y + 1][elem.x + 1]) can = false;
-        } else if (elem.y == 9 && elem.x == 9) {
-            if (map[elem.y - 1][elem.x - 1]) can = false;
-        } else if (elem.y == 0 && elem.x == 9) {
-            if (map[elem.y + 1][elem.x - 1]) can = false;
-        }  else if (elem.y == 9 && elem.x == 0) {
-            if (map[elem.y - 1][elem.x - 1] || map[elem.y - 1][elem.x + 1]) can = false;
-        }   else if (elem.y == 0 && elem.x != 0 && elem.x != 9) {
-            if (map[elem.y + 1][elem.x - 1] || map[elem.y + 1][elem.x + 1]) can = false;
-        }   else if (elem.x == 0 && elem.y != 0 && elem.y != 9) {
-            if (map[elem.y + 1][elem.x + 1] || map[elem.y - 1][elem.x + 1]) can = false;
-        }   else if (elem.x == 9 && elem.y != 0 && elem.y != 9) {
-            if (map[elem.y - 1][elem.x - 1] || map[elem.y + 1][elem.x - 1]) can = false;
-        }   else if (elem.y == 9 && elem.x != 0 && elem.x != 9) {
-            if (map[elem.y - 1][elem.x - 1] || map[elem.y - 1][elem.x + 1]) can = false;
+function checkDiaganalElements(elem, map) { 
+    for (const key of Object.keys(CHECK_ALL_DIAGANAL_WAY)) {
+        const x = elem.x + CHECK_ALL_DIAGANAL_WAY[key].x;
+        const y = elem.y + CHECK_ALL_DIAGANAL_WAY[key].y;
+        if (y >= 0 && y <= 9 && x >= 0 && x <= 9 && map[y][x] == 1) {
+            return false;
         }
     }
-    return can;
+    return true
 }
-function markDiaganalElements(elem, map) {
-    if (elem.y != 0 && elem.y != 9 && elem.x != 0 && elem.x != 9) {
-        if (map[elem.y + 1][elem.x + 1] == 0) map[elem.y + 1][elem.x + 1] = -2;
-        if (map[elem.y + 1][elem.x - 1] == 0) map[elem.y + 1][elem.x - 1] = -2;
-        if (map[elem.y - 1][elem.x + 1] == 0) map[elem.y + 1][elem.x - 1] = -2;
-        if (map[elem.y - 1][elem.x - 1] == 0) map[elem.y - 1][elem.x - 1] = -2;
-    } else {
-        if (elem.y == 0 && elem.x == 0) {
-            if (map[elem.y + 1][elem.x + 1] == 0) map[elem.y + 1][elem.x + 1] = -2;
-        } else if (elem.y == 9 && elem.x == 9) {
-            if (map[elem.y - 1][elem.x - 1] == 0) map[elem.y - 1][elem.x - 1] = -2;
-        } else if (elem.y == 0 && elem.x == 9) {
-            if (map[elem.y + 1][elem.x - 1] == 0) map[elem.y + 1][elem.x - 1] = -2;
-        }  else if (elem.y == 9 && elem.x == 0) {
-            if (map[elem.y - 1][elem.x - 1] == 0) map[elem.y - 1][elem.x - 1] = -2;
-            if (map[elem.y - 1][elem.x + 1] == 0) map[elem.y - 1][elem.x + 1] = -2;
-        }   else if (elem.y == 0 && elem.x != 0 && elem.x != 9) {
-            if (map[elem.y + 1][elem.x - 1] == 0) map[elem.y + 1][elem.x - 1] = -2;
-            if (map[elem.y + 1][elem.x + 1] == 0) map[elem.y + 1][elem.x + 1] = -2;
-        }   else if (elem.x == 0 && elem.y != 0 && elem.y != 9) {
-            if (map[elem.y + 1][elem.x + 1] == 0) map[elem.y + 1][elem.x + 1] = -2;
-            if (map[elem.y - 1][elem.x + 1] == 0) map[elem.y - 1][elem.x + 1] = -2;
-        }   else if (elem.x == 9 && elem.y != 0 && elem.y != 9) {
-            if (map[elem.y - 1][elem.x - 1] == 0) map[elem.y - 1][elem.x - 1] = -2;
-            if (map[elem.y + 1][elem.x - 1] == 0) map[elem.y + 1][elem.x - 1] = -2;
-        }   else if (elem.y == 9 && elem.x != 0 && elem.x != 9) {
-            if (map[elem.y - 1][elem.x - 1] == 0) map[elem.y - 1][elem.x - 1] = -2;
-            if (map[elem.y - 1][elem.x + 1] == 0) map[elem.y - 1][elem.x + 1] = -2;
+function markDiaganalElements(elem, map) { 
+    for (const key of Object.keys(CHECK_ALL_DIAGANAL_WAY)) {
+        const x = elem.x + CHECK_ALL_DIAGANAL_WAY[key].x;
+        const y = elem.y + CHECK_ALL_DIAGANAL_WAY[key].y;
+        if (y >= 0 && y <= 9 && x >= 0 && x <= 9 && map[y][x] == 1) {
+            if(map[y][x] == EMPTY) {
+                map[y][x] = NO_SHIP_INV;
+            }
         }
     }
     return;
