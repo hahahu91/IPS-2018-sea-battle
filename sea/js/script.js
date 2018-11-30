@@ -2,7 +2,7 @@ export {MyMap, EnemyMoves, MyShips}
 import {getRandomMap} from "./inc/maps.js"; 
 import {HAVE_SHIP, EMPTY, END_FIELD, BEGIN_FIELD, MY_FIELD, 
     ENEMY_FIELD, WIDTH_SQUARE, OFFSET_FIELD, TYPE_SHIPS, MAX_SHIPS, MY_MOVE, CHECK_ALL_WAY, CHECK_ALL_DIAGANAL_SQUARE} from "./inc/consts.js";
-import {Game, startGame, handlerAttack} from "./inc/GameController.js";
+import {Game, startGame, handlerAttack, countShip} from "./inc/GameController.js";
 import {isEqualShips} from "./inc/othersFunctions.js";
 import {draw, redrawAllFields} from './inc/drawFields.js';
 function Player() {
@@ -228,7 +228,7 @@ function isClickRandomButton(elem) {
     return elem.field == ENEMY_FIELD && elem.x >= 1 && elem.y >= 7 && elem.x <= 4 && elem.y <= 8;
 }
 function isClickStartButton(elem) {
-    return elem.field == ENEMY_FIELD && elem.x >= 7 && elem.y >= 7 && elem.x <= 9 && elem.y <= 8;
+    return elem.field == ENEMY_FIELD && elem.x >= 6 && elem.y >= 7 && elem.x <= 8 && elem.y <= 8;
 }
 function updateOneField(elem) {
     if(Game.placement) {
