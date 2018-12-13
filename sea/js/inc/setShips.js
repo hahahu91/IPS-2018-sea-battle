@@ -1,7 +1,8 @@
-import {HAVE_SHIP, EMPTY, END_FIELD, BEGIN_FIELD, MY_FIELD, 
+import {HAVE_SHIP, EMPTY, END_FIELD, BEGIN_FIELD, MY_FIELD, KILLED,
     ENEMY_FIELD, WIDTH_SQUARE, OFFSET_FIELD, TYPE_SHIPS, MAX_SHIPS, MY_MOVE, CHECK_ALL_WAY, CHECK_ALL_DIAGANAL_SQUARE, BOX_WIDTH} from "./consts.js";
 import {countShip} from "./GameController.js";
 import {checkIfAllShipsAreReady, isOnField} from "./othersFunctions.js";
+import {isVertical, coordinateShip} from "./markSquare.js";
 function removeDesk(map, ships, elem) {
     map[elem.y][elem.x] = EMPTY;
     const typePrevShip = countShip(elem, map);                     
@@ -61,16 +62,33 @@ function removePrevTypeShips(typeShip, lenPrevShip, ships) {
     }
 }
 function getShipsMap(map) {
-let ships = {
-
-}
+    let ships = [];
     for(let i = 0; i < map.length; i++){
         for (let j = 0; j < map[i].length; j++) {
             if (map[i][j] == HAVE_SHIP || map[i][j] == KILLED) {
+                const coord = coordinateShip({y: i, x: j}, map);
+                    ships.push(coord);
                 
             }
         }   
     }
+    
+    return uniq_fast(ships);
+}
+
+function uniq_fast(a) {
+    var seen = {};
+    var out = [];
+    var len = a.length;
+    var j = 0;
+    for(var i = 0; i < len; i++) {
+         var item = a[i];
+         if(seen[item[0].x + 10 * item[0].y] !== 1) {
+               seen[item[0].x + 10 * item[0].y] = 1;
+               out[j++] = item;
+         }
+    }
+    return out;
 }
 function mostPartOfShip(elem, map, search) {    
     let count = 0;
@@ -114,5 +132,6 @@ export {
     addCurTypeShips,
     addShip,
     removeDesk,
-    updateFieldWhenPlacing
+    updateFieldWhenPlacing,
+    getShipsMap
 }

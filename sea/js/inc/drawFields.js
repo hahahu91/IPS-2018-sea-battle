@@ -9,6 +9,8 @@ import {WIDTH, LETTERS, BOX_WIDTH, END_FIELD, BEGIN_FIELD, MY_FIELD,
     ENEMY_FIELD, WIDTH_SQUARE, OFFSET_FIELD, EMPTY} from "./consts.js";
 
 import {drawPlacementSquare, drawSquare, drawEmptySquare} from "./drawSquare.js";
+import {getShipsMap} from "./setShips.js";
+import {isVertical} from "./markSquare.js";
 import {Game} from "./GameController.js";
 function draw(ctx, WIDTH, HEIGHT) {
     createField(ctx, WIDTH, HEIGHT);
@@ -18,7 +20,6 @@ function createField(ctx, Width,  Height) {
     const y = OFFSET_FIELD.y;
     createCommonField(ctx, x - WIDTH_SQUARE, y - WIDTH_SQUARE*4, 24, 15);
     createOneField(ctx, x, y, MY_FIELD);
-    //createOneField(ctx, x + BOX_WIDTH, y, ENEMY_FIELD);
 }
 function createCommonField(ctx, xBegin, yBegin, width, height) {
     for (let y = 0; y < height; y++) {
@@ -50,8 +51,6 @@ function drawField2WhenPlacement(ctx) {
 
     outerField(ctx, normalX + 6 * WIDTH_SQUARE, normalY + 7 * WIDTH_SQUARE, 2, 3);
     ctx.fillText("начать", normalX + 7.5 * WIDTH_SQUARE, normalY + 8 * WIDTH_SQUARE - 5);
-
-    //outerField(ctx, normalX, normalY, 10, 10);
 }
 function drawMap(ctx, map, field, needOuter = true) {
     const normalX = OFFSET_FIELD.x + field * (BOX_WIDTH);
@@ -59,21 +58,42 @@ function drawMap(ctx, map, field, needOuter = true) {
     if (needOuter) {
         createCommonField(ctx, normalX, normalY, 10, 10);
     }
-    for(let i = 0; i < map.length; i++){
-        for (let j = 0; j < map[i].length; j++) {
-            const x = normalX + j * WIDTH_SQUARE;
-            const y = normalY + i * WIDTH_SQUARE;
-            if (Game.state == "arrangement") {
-                if (field == MY_FIELD) {
-                    drawPlacementSquare(ctx, x, y, map[i][j]);
-                };
-            } else {
-                drawSquare(ctx, x, y, map[i][j]);
-            }   
+    if (Game.state == "arrangement") {
+       let ships = getShipsMap(map);
+       getOuterShips(ctx, normalX, normalY, ships);
+       //console.log(ships);
+       //console.log(ships);
+    } else {
+        for(let i = 0; i < map.length; i++){
+            for (let j = 0; j < map[i].length; j++) {
+                const x = normalX + j * WIDTH_SQUARE;
+                const y = normalY + i * WIDTH_SQUARE;
+                if (Game.state == "arrangement") {
+                    if (field == MY_FIELD) {
+                        drawPlacementSquare(ctx, x, y, map[i][j]);
+                    };
+                } else {
+                    drawSquare(ctx, x, y, map[i][j]);
+                }   
+            }
         }
     }
+        
+    
+    
     if (needOuter) {
         outerField(ctx, normalX, normalY, 10, 10);
+    }
+}
+function getOuterShips(ctx, normalX, normalY, ships) {
+    for(let i = 0; i < ships.length; i++){
+        const x = normalX + ships[i][0].x * WIDTH_SQUARE;
+        const y = normalY + ships[i][0].y * WIDTH_SQUARE;
+        if (isVertical(ships[i])) {
+            outerField(ctx, x, y, ships[i].length, 1);
+        } else {
+            outerField(ctx, x, y, 1, ships[i].length);
+        }
     }
 }
 function prepareEnemyField() {
@@ -127,16 +147,24 @@ function outerField(ctx, xBegin, yBegin, height, width) {
 }
 
 function drawCurve(ctx, x, y, width, height, isVertical = false) {
-    let myPoints = [];
+    const myPoints = getPoints(x, y, width, height, isVertical);
+
+    ctx.beginPath();
+    drawLines(ctx, getCurvePoints(myPoints));
+    ctx.lineWidth = 3;
+    ctx.stroke();
+}
+function getPoints(x, y, width, height, isVertical = false) {
+    let points;
     if (isVertical) {
-        myPoints = [x, y, 
+        points = [x, y, 
                     x - 1, y + height * WIDTH_SQUARE * 0.25, 
                     x - 2, y + height * WIDTH_SQUARE * 0.5, 
                     x - 1, y + height * WIDTH_SQUARE * 0.75, 
                     x, y + height * WIDTH_SQUARE + 1
                 ];
     } else {
-        myPoints = [x, y, 
+        points = [x, y, 
                     x + width * WIDTH_SQUARE * 0.25, y - 1, 
                     x + width * WIDTH_SQUARE * 0.5, y - 2, 
                     x + width * WIDTH_SQUARE * 0.75, y + 1, 
@@ -144,21 +172,18 @@ function drawCurve(ctx, x, y, width, height, isVertical = false) {
                 ];
         }
     if (width == 1 && !isVertical) {
-        myPoints = [x, y, 
+        points = [x, y, 
             x + width * WIDTH_SQUARE * 0.5, y - 1, 
             x + width * WIDTH_SQUARE + 1, y
         ];
     }
     if (height == 1 && isVertical) {
-        myPoints = [x, y, 
+        points = [x, y, 
             x - 1, y + height * WIDTH_SQUARE * 0.5, 
             x, y + height * WIDTH_SQUARE + 1
         ];
     }
-    ctx.beginPath();
-    drawLines(ctx, getCurvePoints(myPoints));
-    ctx.lineWidth = 3;
-    ctx.stroke();
+    return points;
 }
 function getCurvePoints(pts) {
     // use input value if provided, or use a default value   

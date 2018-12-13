@@ -1,8 +1,11 @@
 import {NO_SHIP, NO_SHIP_INV, HAVE_SHIP, KILLED, EMPTY, END_FIELD, BEGIN_FIELD, CHECK_ALL_WAY, CHECK_ALL_DIAGANAL_SQUARE} from "./consts.js";
+import {isOnField} from "./othersFunctions.js";
 export {
     markKilledShip,
     markWhenWounded,
-    markDiaganalElements
+    markDiaganalElements,
+    isVertical,
+    coordinateShip
 }
 function markHorizontalShipOrOneDeckShip(coord, map) {
     let i = 0;
@@ -83,7 +86,7 @@ function coordinateShip(elem, map) {
     for (const key of Object.keys(CHECK_ALL_WAY)) {
         let x = elem.x + CHECK_ALL_WAY[key].x;
         let y = elem.y + CHECK_ALL_WAY[key].y;
-        while (y >= 0 && y <= 9 && x >= 0 && x <= 9 && map[y][x] == 1) {
+        while (isOnField(x, y) && (map[y][x] == HAVE_SHIP || map[y][x] == KILLED)) {
             el[count++] = {
                 y: y,
                 x: x,
@@ -99,7 +102,7 @@ function markDiaganalElements(elem, map) {
     for (const key of Object.keys(CHECK_ALL_DIAGANAL_SQUARE)) {
         const x = elem.x + CHECK_ALL_DIAGANAL_SQUARE[key].x;
         const y = elem.y + CHECK_ALL_DIAGANAL_SQUARE[key].y;
-        if (y >= 0 && y <= 9 && x >= 0 && x <= 9 && map[y][x] == EMPTY) {
+        if (isOnField(x, y) && map[y][x] == EMPTY) {
             if(map[y][x] == EMPTY) {
                 map[y][x] = NO_SHIP_INV;
             }
