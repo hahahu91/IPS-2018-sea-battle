@@ -1,3 +1,6 @@
+
+const WIDTH = 1000;
+const HEIGHT = 500;
 const NO_SHIP = -3;
 const NO_SHIP_INV = -2;
 const MISS = -1;
@@ -8,9 +11,12 @@ const END_FIELD = 9;
 const BEGIN_FIELD = 0;
 const MY_FIELD = 0;
 const ENEMY_FIELD = 1;
-const WIDTH_SQUARE = 40;
-const OFFSET_FIELD = 40;
-const BOX_WIDTH = WIDTH_SQUARE * 10;
+const WIDTH_SQUARE = HEIGHT/15;
+const OFFSET_FIELD = {
+    x: Math.max((WIDTH-24*WIDTH_SQUARE)/2, 0) + WIDTH_SQUARE,
+    y: 2 + WIDTH_SQUARE*4,
+}
+const BOX_WIDTH = WIDTH_SQUARE * 12;
 const TYPE_SHIPS = {
     1: 'oneDesk',
     2: 'twoDesk',
@@ -59,5 +65,7 @@ export {
     CHECK_ALL_WAY,
     CHECK_ALL_DIAGANAL_SQUARE,
     LETTERS,
-    BOX_WIDTH
+    BOX_WIDTH,
+    WIDTH,
+    HEIGHT
 }

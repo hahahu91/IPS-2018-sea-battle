@@ -1,3 +1,4 @@
+import {MAX_SHIPS, BEGIN_FIELD, END_FIELD} from "./consts.js";
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
   }
@@ -7,14 +8,18 @@ function isNull(obj) {
     };
     return true;
 }
-function isEqualShips(obj1, obj2) {
-    return obj1.oneDesk == obj2.oneDesk
-        && obj1.twoDesk == obj2.twoDesk
-        && obj1.threeDesk == obj2.threeDesk
-        && obj1.fourDesk == obj2.fourDesk;
+function isOnField(x, y) {
+    return y >= BEGIN_FIELD && y <= END_FIELD && x >= BEGIN_FIELD && x <= END_FIELD;
+}
+function checkIfAllShipsAreReady(obj) {
+    return obj.oneDesk == MAX_SHIPS.oneDesk
+        && obj.twoDesk == MAX_SHIPS.twoDesk
+        && obj.threeDesk == MAX_SHIPS.threeDesk
+        && obj.fourDesk == MAX_SHIPS.fourDesk;
 }
 export {
     getRandomInt,
     isNull,
-    isEqualShips
+    checkIfAllShipsAreReady,
+    isOnField
 }

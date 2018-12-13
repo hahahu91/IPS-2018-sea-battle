@@ -1,15 +1,14 @@
 import {NO_SHIP, NO_SHIP_INV,MISS, HAVE_SHIP, KILLED, WIDTH_SQUARE} from "./consts.js";
-import {line} from "./drawFields.js";
+import {drawCurve, outerField} from "./drawFields.js";
 export {
     drawPlacementSquare,
-    drawSquare
+    drawEmptySquare,
+    drawSquare,
 };
 function drawPlacementSquare(ctx, x, y, state) {
     if (state == HAVE_SHIP) {
         drawDeckSquare(ctx, x, y);
-    } else {
-        drawEmptySquare(ctx, x, y);
-    }
+    } 
 }
 function drawSquare(ctx, x, y, state) {
     switch(state) {
@@ -43,6 +42,7 @@ function drawNoShipSquare(ctx, x, y) {
     ctx.font = "45px Mistral"; 
 }
 function drawKilledSquare(ctx, x, y) {
+    drawEmptySquareWithoutFrame(ctx, x, y);
     drawHitSquare(ctx, x, y);
     drawScratched(ctx, x, y);
 }
@@ -50,12 +50,18 @@ function drawMissedSquare(ctx, x, y) {
     drawEmptySquareWithoutFrame(ctx, x, y);
     ctx.fillStyle = "#4847b3";
     ctx.font = "80px Arial"; 
-    ctx.fillText(".", x + WIDTH_SQUARE / 2, y - 2);
+    ctx.fillText(".", x  + WIDTH_SQUARE / 2, y - 2);
     ctx.font = "45px Mistral"; 
 }
 function drawDeckSquare(ctx, x, y) {
-    ctx.strokeStyle = "#4847b3";
-    ctx.strokeRect(x, y, WIDTH_SQUARE-2, WIDTH_SQUARE-2);
+    const isVertical = true;
+    ctx.strokeStyle = "#4847b3"; 
+    //ctx.strokeRect(x, y, WIDTH_SQUARE-2, WIDTH_SQUARE-2);
+    // drawCurve(ctx, x, y, 1, 1);
+    // drawCurve(ctx, x, y, 1, 1, isVertical);
+    // drawCurve(ctx, x + WIDTH_SQUARE, y, 1, 1, isVertical);
+    // drawCurve(ctx, x, y + WIDTH_SQUARE, 1, 1);
+    outerField(ctx, x, y, 1, 1);
 }
 function drawHitSquare(ctx, x, y) {
     ctx.font = "45px Arial";    
@@ -72,7 +78,7 @@ function drawEmptySquare(ctx, x, y) {
 function drawEmptySquareWithoutFrame(ctx, x, y) {
     ctx.fillStyle = "#ffffff";
     ctx.strokeStyle = "#b7e2e2";
-    ctx.fillRect(x, y, WIDTH_SQUARE - 10, WIDTH_SQUARE - 10);
+    ctx.fillRect(x + 2, y + 2, WIDTH_SQUARE - 4, WIDTH_SQUARE - 4);
 }
 function drawScratched(ctx, x, y) {
     ctx.lineWidth = 1;
@@ -80,29 +86,18 @@ function drawScratched(ctx, x, y) {
     ctx.beginPath();
     ctx.moveTo(x, y)
     for (let i = 0; i < 5; i++) {
-        ctx.lineTo(x + 5 * i, y);
-        ctx.lineTo(x, y + 10 * i)
+        ctx.lineTo(x + WIDTH_SQUARE/8 * i, y);
+        ctx.lineTo(x, y + WIDTH_SQUARE/4 * i)
         // x  = 20  y 40
     }
     for (let i = 1; i < 5; i++) {
-        ctx.lineTo(x + 20 + i * 5, y);
-        ctx.lineTo(x + i * 5, y + 40);
+        ctx.lineTo(x + WIDTH_SQUARE/2 + i * WIDTH_SQUARE/8, y);
+        ctx.lineTo(x + i * WIDTH_SQUARE/8, y + WIDTH_SQUARE);
     }
     for (let i = 1; i < 5; i++) {
-        ctx.lineTo(x + 40, y + 10 * i);
-        ctx.lineTo(x + 20 + 5 * i, y + 40)
+        ctx.lineTo(x + WIDTH_SQUARE, y + WIDTH_SQUARE/4 * i);
+        ctx.lineTo(x + WIDTH_SQUARE/2 + WIDTH_SQUARE/8 * i, y + WIDTH_SQUARE)
         // x  = 20  y 40
     }
-    ctx.stroke();
-}
-function line2(ctx, x, y, isVertical = false) {
-    ctx.beginPath();
-    ctx.moveTo(x, y); //(controlX1, controlY1, controlX2, controlY2, endX, endY);
-    if (isVertical) {
-        ctx.bezierCurveTo(x - 2, y + 10, x + 2, y + 30, x, y + WIDTH_SQUARE + 3);
-    } else {
-        ctx.bezierCurveTo(x + 10, y - 2, x + 30, y + 2, x + WIDTH_SQUARE + 3, y);
-    }
-    ctx.lineWidth = 3;
     ctx.stroke();
 }
