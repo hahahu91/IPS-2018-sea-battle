@@ -1,9 +1,9 @@
-import {MAX_SHIPS, BEGIN_FIELD, END_FIELD} from "./consts.js";
+import {MAX_SHIPS, BEGIN_FIELD, END_FIELD} from './consts.js';
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
-  }
+}
 function isNull(obj) {
-    for (const element of Object.values(obj)) { 
+    for (const element of Object.values(obj)) {
         if (element != 0) return false;
     };
     return true;
@@ -21,5 +21,6 @@ export {
     getRandomInt,
     isNull,
     checkIfAllShipsAreReady,
-    isOnField
+    isOnField,
 }
+;

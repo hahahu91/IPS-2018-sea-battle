@@ -1,19 +1,19 @@
-import {NO_SHIP, NO_SHIP_INV, HAVE_SHIP, KILLED, EMPTY, END_FIELD, BEGIN_FIELD, CHECK_ALL_WAY, CHECK_ALL_DIAGANAL_SQUARE} from "./consts.js";
-import {isOnField} from "./othersFunctions.js";
+import {NO_SHIP, NO_SHIP_INV, HAVE_SHIP, KILLED, EMPTY, END_FIELD, BEGIN_FIELD, CHECK_ALL_WAY, CHECK_ALL_DIAGANAL_SQUARE} from './consts.js';
+import {isOnField} from './othersFunctions.js';
 export {
     markKilledShip,
     markWhenWounded,
     markDiaganalElements,
     isVertical,
-    coordinateShip
-}
+    coordinateShip,
+};
 function markHorizontalShipOrOneDeckShip(coord, map) {
     let i = 0;
-    let lenShip = coord.length;
+    const lenShip = coord.length;
     if (coord[i].x != BEGIN_FIELD) {
         markHorizontalElem(map, coord[i].y, coord[i].x - 1);
     }
-    while(i < lenShip) {
+    while (i < lenShip) {
         map[coord[i].y][coord[i].x] = KILLED;
         markHorizontalElem(map, coord[i].y, coord[i].x);
         i++;
@@ -24,11 +24,11 @@ function markHorizontalShipOrOneDeckShip(coord, map) {
 }
 function markVerticalShip(coord, map) {
     let i = 0;
-    let lenShip = coord.length;
+    const lenShip = coord.length;
     if (coord[i].y != BEGIN_FIELD) {
-        markVerticalElem(map, coord[i].y -  1, coord[i].x);
+        markVerticalElem(map, coord[i].y - 1, coord[i].x);
     }
-    while(i < lenShip) {
+    while (i < lenShip) {
         map[coord[i].y][coord[i].x] = KILLED;
         markVerticalElem(map, coord[i].y, coord[i].x);
         i++;
@@ -41,7 +41,7 @@ function markHorizontalElem(map, y, x) {
     if (map[y][x] == EMPTY || map[y][x] == NO_SHIP_INV) {
         map[y][x] = NO_SHIP;
     }
-    if (y != BEGIN_FIELD && (map[y - 1][x] == EMPTY || map[y - 1][x] == NO_SHIP_INV))  {
+    if (y != BEGIN_FIELD && (map[y - 1][x] == EMPTY || map[y - 1][x] == NO_SHIP_INV)) {
         map[y - 1][x] = NO_SHIP;
     }
     if (y != END_FIELD && (map[y + 1][x] == EMPTY || map[y + 1][x] == NO_SHIP_INV)) {
@@ -68,16 +68,16 @@ function markKilledShip(elem, map) {
     if (isVertical(coord)) {
         markVerticalShip(coord, map);
     } else {
-        markHorizontalShipOrOneDeckShip(coord, map); 
+        markHorizontalShipOrOneDeckShip(coord, map);
     }
 }
 function isVertical(coord) {
-    let i = 0;
-    let lenShip = coord.length;
+    const i = 0;
+    const lenShip = coord.length;
     return lenShip > 1 && coord[i].y < coord[i + 1].y;
 }
-function coordinateShip(elem, map) {    
-    let el = [];
+function coordinateShip(elem, map) {
+    const el = [];
     let count = 0;
     el[count++] = {
         y: elem.y,
@@ -98,12 +98,12 @@ function coordinateShip(elem, map) {
     el.sort(compareEl);
     return el;
 }
-function markDiaganalElements(elem, map) { 
+function markDiaganalElements(elem, map) {
     for (const key of Object.keys(CHECK_ALL_DIAGANAL_SQUARE)) {
         const x = elem.x + CHECK_ALL_DIAGANAL_SQUARE[key].x;
         const y = elem.y + CHECK_ALL_DIAGANAL_SQUARE[key].y;
         if (isOnField(x, y) && map[y][x] == EMPTY) {
-            if(map[y][x] == EMPTY) {
+            if (map[y][x] == EMPTY) {
                 map[y][x] = NO_SHIP_INV;
             }
         }
