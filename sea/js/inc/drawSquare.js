@@ -1,4 +1,6 @@
-import {NO_SHIP, NO_SHIP_INV, MISS, HAVE_SHIP, KILLED, WIDTH_SQUARE} from './consts.js';
+import {SQUARE_STATE, WIDTH_SQUARE} from './consts.js';
+import {FONT} from './const/font.js';
+import {COLOR} from './const/color.js';
 import {outerField} from './drawFields.js';
 export {
     drawPlacementSquare,
@@ -12,34 +14,26 @@ function drawPlacementSquare(ctx, x, y, state) {
 }
 function drawSquare(ctx, x, y, state) {
     switch (state) {
-    case HAVE_SHIP:
+    case SQUARE_STATE.HAVE_SHIP:
         drawHitSquare(ctx, x, y);
         break;
-    case MISS:
+    case SQUARE_STATE.MISS:
         drawMissedSquare(ctx, x, y);
         break;
-    case KILLED:
+    case SQUARE_STATE.KILLED:
         drawKilledSquare(ctx, x, y);
         break;
-    case NO_SHIP:
+    case SQUARE_STATE.NO_SHIP:
         drawNoShipSquare(ctx, x, y);
-        break;
-    case NO_SHIP_INV:
-        //drawNoShipSquare2(ctx, x, y);
-        break;
     }
 }
-function drawNoShipSquare2(ctx, x, y) {
-    ctx.fillStyle = 'black';
-    ctx.font = 'Regular 20pt Arial';
-    ctx.fillText('!', x + WIDTH_SQUARE / 2, y + WIDTH_SQUARE / 2);
-}
+
 function drawNoShipSquare(ctx, x, y) {
     drawEmptySquareWithoutFrame(ctx, x, y);
-    ctx.fillStyle = '#4847b3';
-    ctx.font = '25px Mistral';
+    ctx.fillStyle = COLOR.PEN;
+    ctx.font = FONT.SMALL;
     ctx.fillText('-', x + WIDTH_SQUARE / 2, y + WIDTH_SQUARE / 2);
-    ctx.font = '45px Mistral';
+    ctx.font = FONT.NORMAL;
 }
 function drawKilledSquare(ctx, x, y) {
     drawEmptySquareWithoutFrame(ctx, x, y);
@@ -47,45 +41,36 @@ function drawKilledSquare(ctx, x, y) {
     drawScratched(ctx, x, y);
 }
 
-//const FONT_FAMILY = 'Arial';
-
 function drawMissedSquare(ctx, x, y) {
     drawEmptySquareWithoutFrame(ctx, x, y);
-    ctx.fillStyle = '#4847b3';
-    ctx.font = '80px Arial';
-    ctx.fillText('.', x + WIDTH_SQUARE / 2, y - 2);
-    ctx.font = '45px Mistral';
-    //ctx.font = `${FONT_SIZE}px ${FONT_FAMILY}`;
+    ctx.fillStyle = COLOR.PEN;
+    ctx.font = FONT.BIG;
+    ctx.fillText('.', x + WIDTH_SQUARE / 2, y - WIDTH_SQUARE / 5);
+    ctx.font = FONT.NORMAL;
 }
 function drawDeckSquare(ctx, x, y) {
-    ctx.strokeStyle = '#4847b3';
-    //ctx.strokeRect(x, y, WIDTH_SQUARE-2, WIDTH_SQUARE-2);
-    // drawCurve(ctx, x, y, 1, 1);
-    // drawCurve(ctx, x, y, 1, 1, isVertical);
-    // drawCurve(ctx, x + WIDTH_SQUARE, y, 1, 1, isVertical);
-    // drawCurve(ctx, x, y + WIDTH_SQUARE, 1, 1);
+    ctx.strokeStyle = COLOR.PEN;
     outerField(ctx, x, y, 1, 1);
 }
 function drawHitSquare(ctx, x, y) {
-    ctx.font = '45px Arial';
-    ctx.fillStyle = '#4847b3';
+    ctx.font = FONT.NORMAL_ALTERNATE;
+    ctx.fillStyle = COLOR.PEN;
     ctx.fillText('X', x + WIDTH_SQUARE / 2, y + WIDTH_SQUARE / 2);
-    ctx.font = '45px Mistral';
+    ctx.font = FONT.NORMAL;
 }
 function drawEmptySquare(ctx, x, y) {
-    ctx.fillStyle = '#ffffff';
-    ctx.strokeStyle = '#b7e2e2';
+    ctx.fillStyle = COLOR.BACKGROUND;
+    ctx.strokeStyle = COLOR.BORDER;
     ctx.strokeRect(x, y, WIDTH_SQUARE, WIDTH_SQUARE);
     ctx.fillRect(x, y, WIDTH_SQUARE, WIDTH_SQUARE);
 }
 function drawEmptySquareWithoutFrame(ctx, x, y) {
-    ctx.fillStyle = '#ffffff';
-    ctx.strokeStyle = '#b7e2e2';
-    ctx.fillRect(x + 2, y + 2, WIDTH_SQUARE - 4, WIDTH_SQUARE - 4);
+    ctx.fillStyle = COLOR.BACKGROUND;
+    ctx.fillRect(x + WIDTH_SQUARE / 10, y + WIDTH_SQUARE / 10, WIDTH_SQUARE * 0.8, WIDTH_SQUARE * 0.8);
 }
 function drawScratched(ctx, x, y) {
     ctx.lineWidth = 1;
-    ctx.strokeStyle = '#4847b3';
+    ctx.strokeStyle = COLOR.PEN;
     ctx.beginPath();
     ctx.moveTo(x, y);
     for (let i = 0; i < 5; i++) {

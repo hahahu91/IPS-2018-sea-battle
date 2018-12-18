@@ -1,17 +1,15 @@
-export {Game, EnemyPrevHit, startGame, handlerAttack, countShip};
-
 import {Player} from './Player.js';
 import {getRandomMap} from './maps.js';
-import {markKilledShip, markWhenWounded, markDiaganalElements} from './markSquare.js';
-import {MISS, HAVE_SHIP, KILLED, EMPTY, END_FIELD, BEGIN_FIELD, MY_FIELD,
-    TYPE_SHIPS, MAX_SHIPS, MY_MOVE, ENEMY_MOVE, CHECK_ALL_WAY} from './consts.js';
+import {markKilledShip, markWhenWounded, markDiaganalElements, isEmptySquare} from './markSquare.js';
+import {SQUARE_STATE, FIELD_BOUNDARIES, MY_FIELD,
+    TYPE_SHIPS, MY_MOVE, ENEMY_MOVE, CHECK_ALL_WAY, GAME_STAGE} from './consts.js';
 import {player1} from './../script.js';
 import {prepareEnemyField} from './drawFields.js';
 import {getRandomInt, isNull, checkIfAllShipsAreReady, isOnField} from './othersFunctions.js';
 
 const Game = {
-    state: 'arrangement', //or ready
-    move: ENEMY_MOVE,
+    state: GAME_STAGE.ARRANGEMENT, //or ready
+    move: tossTheCoin(),
     finish: false,
     player2: 'AI',
 };
@@ -29,25 +27,23 @@ function startGame(ships) {
         alertMessage();
         return;
     }
-    Game.state = 'ready'; //TODO: rename placement to state (arangement | ready)
+    Game.state = GAME_STAGE.READY; //TODO: rename placement to state (arangement | ready)
 
-    //TOCO: prepareEnemyField
     prepareEnemyField();
-    tossTheCoin();
-    if (Game.move == ENEMY_MOVE) {
+    if (Game.move == ENEMY_MOVE && Game.player2 == 'AI') {
         enemyMove();
     }
 }
 function tossTheCoin() {
     const firstMove = getRandomInt(0, 2);
     if (firstMove == 0) {
-        Game.move = MY_MOVE;
+        return MY_MOVE;
     } else {
-        Game.move = ENEMY_MOVE;
+        return ENEMY_MOVE;
     }
 }
 function alertMessage() {
-    if (Game.state == 'arrangement') {
+    if (Game.state == GAME_STAGE.ARRANGEMENT) {
         alert('не установленны корабли !!!');
     } else {
         (Game.move == ENEMY_MOVE) ? alert('YOU LOST') : alert('YOU WIN');
@@ -61,18 +57,18 @@ function handlerAttack(myMovesMap, enemyShips, elem) {
     if (Game.move == ENEMY_MOVE) {
         enemyHitHandler(shotCondition, elem, myMovesMap);
     }
-    if (shotCondition == KILLED) {
+    if (shotCondition == SQUARE_STATE.KILLED) {
         killedHandler(myMovesMap, enemyShips, elem);
-    } else if (shotCondition == HAVE_SHIP) {
+    } else if (shotCondition == SQUARE_STATE.HAVE_SHIP) {
         markWhenWounded(elem, myMovesMap);
-    } else if (shotCondition == MISS) {
+    } else if (shotCondition == SQUARE_STATE.MISS) {
         missHandler(myMovesMap, elem);
         return false;
     }
     return true;
 }
 function missHandler(map, elem) {
-    map[elem.y][elem.x] = MISS;
+    map[elem.y][elem.x] = SQUARE_STATE.MISS;
     Game.move = !Game.move;
     if (Game.move == ENEMY_MOVE && Game.player2 == 'AI') {
         enemyMove();
@@ -87,9 +83,9 @@ function killedHandler(map, ships, elem) {
     };
 }
 function enemyHitHandler(shotCondition, elem, map) {
-    if (shotCondition == KILLED) {
+    if (shotCondition == SQUARE_STATE.KILLED) {
         EnemyPrevHit.isHit = false;
-    } else if (shotCondition == HAVE_SHIP) {
+    } else if (shotCondition == SQUARE_STATE.HAVE_SHIP) {
         markDiaganalElements(elem, map);
         EnemyPrevHit.x = elem.x;
         EnemyPrevHit.y = elem.y;
@@ -103,16 +99,16 @@ function finishGame() {
     Game.finish = true;
 }
 function checkHit(enemyMap, myMovesMap, elem) {
-    if (enemyMap[elem.y][elem.x] == HAVE_SHIP) {
+    if (enemyMap[elem.y][elem.x] == SQUARE_STATE.HAVE_SHIP) {
         const lengthShip = countShip(elem, enemyMap);
         const len = countShip(elem, myMovesMap);
         if (len == lengthShip) {
-            return KILLED;
+            return SQUARE_STATE.KILLED;
         } else {
-            return HAVE_SHIP;
+            return SQUARE_STATE.HAVE_SHIP;
         }
     } else {
-        return MISS;
+        return SQUARE_STATE.MISS;
     }
 }
 function countShip(elem, map) {
@@ -121,7 +117,7 @@ function countShip(elem, map) {
     for (const key of Object.keys(CHECK_ALL_WAY)) {
         let x = elem.x + CHECK_ALL_WAY[key].x;
         let y = elem.y + CHECK_ALL_WAY[key].y;
-        while (isOnField(x, y) && map[y][x] == HAVE_SHIP) {
+        while (isOnField(x, y) && map[y][x] == SQUARE_STATE.HAVE_SHIP) {
             y = y + CHECK_ALL_WAY[key].y;
             x = x + CHECK_ALL_WAY[key].x;
             count++;
@@ -149,11 +145,11 @@ function killShip(elem, map) {
         let x = elem.x;
         let y = elem.y;
         //TODO: add function to check condition
-        while (isOnField(x, y) && map[y][x] == HAVE_SHIP) {
+        while (isOnField(x, y) && map[y][x] == SQUARE_STATE.HAVE_SHIP) {
             y = y + CHECK_ALL_WAY[key].y;
             x = x + CHECK_ALL_WAY[key].x;
             //TODO: add variable
-            if (isOnField(x, y) && map[y][x] == EMPTY) {
+            if (isOnField(x, y) && isEmptySquare(map[y][x])) {
                 return {
                     y: y,
                     x: x,
@@ -174,14 +170,16 @@ function aI() {
         if (EnemyPrevHit.isHit) { //ранение было добиваем
             el = killShip(EnemyPrevHit, player1.EnemyMoves);
         } else {
-            el.x = getRandomInt(0, 10);
-            el.y = getRandomInt(0, 10);
+            el.x = getRandomInt(FIELD_BOUNDARIES.BEGIN, FIELD_BOUNDARIES.END + 1);
+            el.y = getRandomInt(FIELD_BOUNDARIES.BEGIN, FIELD_BOUNDARIES.END + 1);
         }
-    } while (player1.EnemyMoves[el.y][el.x] != EMPTY);
-    if (player1.MyMap[el.y][el.x] == HAVE_SHIP) {
-        player1.EnemyMoves[el.y][el.x] = HAVE_SHIP;
+    } while (player1.EnemyMoves[el.y][el.x] != SQUARE_STATE.EMPTY);
+    if (player1.MyMap[el.y][el.x] == SQUARE_STATE.HAVE_SHIP) {
+        player1.EnemyMoves[el.y][el.x] = SQUARE_STATE.HAVE_SHIP;
     } else {
-        player1.EnemyMoves[el.y][el.x] = MISS;
+        player1.EnemyMoves[el.y][el.x] = SQUARE_STATE.MISS;
     }
     return el;
 }
+
+export {Game, EnemyPrevHit, startGame, handlerAttack, countShip};

@@ -1,4 +1,4 @@
-import {MAX_SHIPS, BEGIN_FIELD, END_FIELD} from './consts.js';
+import {MAX_SHIPS, FIELD_BOUNDARIES} from './consts.js';
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
@@ -9,7 +9,7 @@ function isNull(obj) {
     return true;
 }
 function isOnField(x, y) {
-    return y >= BEGIN_FIELD && y <= END_FIELD && x >= BEGIN_FIELD && x <= END_FIELD;
+    return y >= FIELD_BOUNDARIES.BEGIN && y <= FIELD_BOUNDARIES.END && x >= FIELD_BOUNDARIES.BEGIN && x <= FIELD_BOUNDARIES.END;
 }
 function checkIfAllShipsAreReady(obj) {
     return obj.oneDesk == MAX_SHIPS.oneDesk
@@ -22,5 +22,4 @@ export {
     isNull,
     checkIfAllShipsAreReady,
     isOnField,
-}
-;
+};

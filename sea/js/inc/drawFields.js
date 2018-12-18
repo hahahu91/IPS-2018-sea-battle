@@ -1,21 +1,16 @@
-export {
-    redrawAllFields,
-    draw,
-    prepareEnemyField,
-    drawCurve,
-    outerField,
-};
-import {LETTERS, BOX_WIDTH, END_FIELD, BEGIN_FIELD, MY_FIELD,
-    ENEMY_FIELD, WIDTH_SQUARE, OFFSET_FIELD} from './consts.js';
-
+import {LETTERS, BOX_WIDTH, FIELD_BOUNDARIES, MY_FIELD,
+    ENEMY_FIELD, WIDTH_SQUARE, OFFSET_FIELD, GAME_STAGE} from './consts.js';
+import {FONT} from './const/font.js';
+import {COLOR} from './const/color.js';
 import {drawPlacementSquare, drawSquare, drawEmptySquare} from './drawSquare.js';
 import {getShipsMap} from './setShips.js';
 import {isVertical} from './markSquare.js';
 import {Game} from './GameController.js';
-function draw(ctx, WIDTH, HEIGHT) {
-    createField(ctx, WIDTH, HEIGHT);
+import {BUTTONS} from './const/buttons.js';
+function draw(ctx) {
+    createField(ctx);
 }
-function createField(ctx, Width, Height) {
+function createField(ctx) {
     const x = OFFSET_FIELD.x;
     const y = OFFSET_FIELD.y;
     createCommonField(ctx, x - WIDTH_SQUARE, y - WIDTH_SQUARE*4, 24, 15);
@@ -29,7 +24,7 @@ function createCommonField(ctx, xBegin, yBegin, width, height) {
     }
 }
 function redrawAllFields(ctx, player) {
-    if (Game.state == 'arrangement') {
+    if (Game.state == GAME_STAGE.ARRANGEMENT) {
         drawMap(ctx, player.MyMap, MY_FIELD);
         drawField2WhenPlacement(ctx);
     } else {
@@ -38,37 +33,41 @@ function redrawAllFields(ctx, player) {
     }
 }
 function drawField2WhenPlacement(ctx) {
-    ctx.font = '45px Mistral';
-    ctx.fillStyle = '#4847b3';
+    ctx.font = FONT.NORMAL;
+    ctx.fillStyle = COLOR.PEN;
     ctx.textAlign = 'centre';
     ctx.textBaseline = 'middle';
 
     const normalX = OFFSET_FIELD.x + BOX_WIDTH;
     const normalY = OFFSET_FIELD.y;
 
-    outerField(ctx, normalX + 1 * WIDTH_SQUARE, normalY + 7 * WIDTH_SQUARE, 2, 4);
-    ctx.fillText('случайно', normalX + 3 * WIDTH_SQUARE, normalY + 8 * WIDTH_SQUARE - 5);
-
-    outerField(ctx, normalX + 6 * WIDTH_SQUARE, normalY + 7 * WIDTH_SQUARE, 2, 3);
-    ctx.fillText('начать', normalX + 7.5 * WIDTH_SQUARE, normalY + 8 * WIDTH_SQUARE - 5);
+    drawButton(ctx, normalX, normalY, BUTTONS.RANDOM);
+    drawButton(ctx, normalX, normalY, BUTTONS.START);
 }
+
+function drawButton(ctx, normalX, normalY, button) {
+    const x = normalX + button.BEGIN.x * WIDTH_SQUARE;
+    const y = normalY + button.BEGIN.y * WIDTH_SQUARE;
+    const xMid = x + (button.WIDTH * WIDTH_SQUARE) / 2;
+    const yMid = y + (button.HEIGHT * WIDTH_SQUARE) / 2 - 5;
+    outerField(ctx, x, y, button.HEIGHT, button.WIDTH);
+    ctx.fillText(button.NAME, xMid, yMid, button.WIDTH * WIDTH_SQUARE);
+};
 function drawMap(ctx, map, field, needOuter = true) {
     const normalX = OFFSET_FIELD.x + field * (BOX_WIDTH);
     const normalY = OFFSET_FIELD.y;
     if (needOuter) {
         createCommonField(ctx, normalX, normalY, 10, 10);
     }
-    if (Game.state == 'arrangement') {
+    if (Game.state == GAME_STAGE.ARRANGEMENT) {
         const ships = getShipsMap(map);
         getOuterShips(ctx, normalX, normalY, ships);
-        //console.log(ships);
-        //console.log(ships);
     } else {
         for (let i = 0; i < map.length; i++) {
             for (let j = 0; j < map[i].length; j++) {
                 const x = normalX + j * WIDTH_SQUARE;
                 const y = normalY + i * WIDTH_SQUARE;
-                if (Game.state == 'arrangement') {
+                if (Game.state == GAME_STAGE.ARRANGEMENT) {
                     if (field == MY_FIELD) {
                         drawPlacementSquare(ctx, x, y, map[i][j]);
                     };
@@ -104,29 +103,29 @@ function prepareEnemyField() {
 }
 function createOneField(ctx, xBegin, yBegin, field = MY_FIELD) {
     const widthSquare = WIDTH_SQUARE;
-    ctx.font = '45px Mistral';
+    ctx.font = FONT.NORMAL;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    for (let y = BEGIN_FIELD; y <= END_FIELD; y++) {
-        for (let x = BEGIN_FIELD; x <= END_FIELD; x++) {
-            ctx.fillStyle = '#4847b3';
+    for (let y = FIELD_BOUNDARIES.BEGIN; y <= FIELD_BOUNDARIES.END; y++) {
+        for (let x = FIELD_BOUNDARIES.BEGIN; x <= FIELD_BOUNDARIES.END; x++) {
+            ctx.fillStyle = COLOR.PEN;
             const xMidSquare = xBegin + x * widthSquare + widthSquare / 2;
             const yMidSquare = yBegin + y * widthSquare + widthSquare / 2;
-            if (y == BEGIN_FIELD) {
+            if (y == FIELD_BOUNDARIES.BEGIN) {
                 ctx.fillText(LETTERS[x], xMidSquare, yBegin - widthSquare + widthSquare / 2);
             }
-            if (y == END_FIELD) {
+            if (y == FIELD_BOUNDARIES.END) {
                 ctx.fillText(LETTERS[x], xMidSquare, yMidSquare + widthSquare);
             }
-            if (x == END_FIELD && field == ENEMY_FIELD) {
+            if (x == FIELD_BOUNDARIES.END && field == ENEMY_FIELD) {
                 ctx.fillText(y + 1, xMidSquare + widthSquare, yMidSquare);
             }
-            if (x == BEGIN_FIELD) {
+            if (x == FIELD_BOUNDARIES.BEGIN) {
                 ctx.fillText(y + 1, xMidSquare - widthSquare, yMidSquare);
             }
-            ctx.fillStyle = '#ffffff';
-            ctx.strokeStyle = '#b7e2e2';
+            ctx.fillStyle = COLOR.BACKGROUND;
+            ctx.strokeStyle = COLOR.BORDER;
             ctx.strokeRect(xMidSquare - widthSquare / 2, yMidSquare - widthSquare / 2, widthSquare, widthSquare);
             ctx.fillRect(xMidSquare - widthSquare / 2, yMidSquare - widthSquare / 2, widthSquare, widthSquare);
         }
@@ -135,7 +134,7 @@ function createOneField(ctx, xBegin, yBegin, field = MY_FIELD) {
 
 function outerField(ctx, xBegin, yBegin, height, width) {
     const widthSquare = WIDTH_SQUARE;
-    ctx.strokeStyle = '#4847b3';
+    ctx.strokeStyle = COLOR.PEN;
     const isVertical = true;
 
     drawCurve(ctx, xBegin, yBegin, width, height);
@@ -239,3 +238,11 @@ function drawLines(ctx, pts) {
     ctx.moveTo(pts[0], pts[1]);
     for (let i = 2; i < pts.length - 1; i += 2) ctx.lineTo(pts[i], pts[i + 1]);
 }
+
+export {
+    redrawAllFields,
+    draw,
+    prepareEnemyField,
+    drawCurve,
+    outerField,
+};

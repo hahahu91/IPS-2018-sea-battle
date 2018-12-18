@@ -1,66 +1,61 @@
-import {NO_SHIP, NO_SHIP_INV, HAVE_SHIP, KILLED, EMPTY, END_FIELD, BEGIN_FIELD, CHECK_ALL_WAY, CHECK_ALL_DIAGANAL_SQUARE} from './consts.js';
+import {SQUARE_STATE, FIELD_BOUNDARIES, CHECK_ALL_WAY, CHECK_ALL_DIAGANAL_SQUARE} from './consts.js';
 import {isOnField} from './othersFunctions.js';
-export {
-    markKilledShip,
-    markWhenWounded,
-    markDiaganalElements,
-    isVertical,
-    coordinateShip,
-};
+
 function markHorizontalShipOrOneDeckShip(coord, map) {
     let i = 0;
     const lenShip = coord.length;
-    if (coord[i].x != BEGIN_FIELD) {
+    if (coord[i].x != FIELD_BOUNDARIES.BEGIN) {
         markHorizontalElem(map, coord[i].y, coord[i].x - 1);
     }
     while (i < lenShip) {
-        map[coord[i].y][coord[i].x] = KILLED;
+        map[coord[i].y][coord[i].x] = SQUARE_STATE.KILLED;
         markHorizontalElem(map, coord[i].y, coord[i].x);
         i++;
     }
-    if (coord[i - 1].x != END_FIELD) {
+    if (coord[i - 1].x != FIELD_BOUNDARIES.END) {
         markHorizontalElem(map, coord[i - 1].y, coord[i - 1].x + 1);
     }
 }
 function markVerticalShip(coord, map) {
     let i = 0;
     const lenShip = coord.length;
-    if (coord[i].y != BEGIN_FIELD) {
+    if (coord[i].y != FIELD_BOUNDARIES.BEGIN) {
         markVerticalElem(map, coord[i].y - 1, coord[i].x);
     }
     while (i < lenShip) {
-        map[coord[i].y][coord[i].x] = KILLED;
+        map[coord[i].y][coord[i].x] = SQUARE_STATE.KILLED;
         markVerticalElem(map, coord[i].y, coord[i].x);
         i++;
     }
-    if (coord[i - 1].y != END_FIELD) {
+    if (coord[i - 1].y != FIELD_BOUNDARIES.END) {
         markVerticalElem(map, coord[i - 1].y + 1, coord[i - 1].x);
     }
 }
 function markHorizontalElem(map, y, x) {
-    if (map[y][x] == EMPTY || map[y][x] == NO_SHIP_INV) {
-        map[y][x] = NO_SHIP;
+    if (isUntouchedSquare(map[y][x])) {
+        map[y][x] = SQUARE_STATE.NO_SHIP;
     }
-    if (y != BEGIN_FIELD && (map[y - 1][x] == EMPTY || map[y - 1][x] == NO_SHIP_INV)) {
-        map[y - 1][x] = NO_SHIP;
+    if (y != FIELD_BOUNDARIES.BEGIN && (isUntouchedSquare(map[y - 1][x]))) {
+        map[y - 1][x] = SQUARE_STATE.NO_SHIP;
     }
-    if (y != END_FIELD && (map[y + 1][x] == EMPTY || map[y + 1][x] == NO_SHIP_INV)) {
-        map[y + 1][x] = NO_SHIP;
+    if (y != FIELD_BOUNDARIES.END && (isUntouchedSquare(map[y + 1][x]))) {
+        map[y + 1][x] = SQUARE_STATE.NO_SHIP;
     }
 }
 function markVerticalElem(map, y, x) {
-    if (map[y][x] == EMPTY || map[y][x] == NO_SHIP_INV) {
-        map[y][x] = NO_SHIP;
+    if (isUntouchedSquare(map[y][x])) {
+        map[y][x] = SQUARE_STATE.NO_SHIP;
     }
-    if (x != BEGIN_FIELD && (map[y][x - 1] == EMPTY || map[y][x - 1] == NO_SHIP_INV)) {
-        map[y][x - 1] = NO_SHIP;
+    if (x != FIELD_BOUNDARIES.BEGIN && (isUntouchedSquare(map[y][x - 1]))) {
+        map[y][x - 1] = SQUARE_STATE.NO_SHIP;
     }
-    if (x != END_FIELD && (map[y][x + 1] == EMPTY || map[y][x + 1] == NO_SHIP_INV)) {
-        map[y][x + 1] = NO_SHIP;
+    if (x != FIELD_BOUNDARIES.END && (isUntouchedSquare(map[y][x + 1]))) {
+        map[y][x + 1] = SQUARE_STATE.NO_SHIP;
     }
 }
+
 function markWhenWounded(elem, map) {
-    map[elem.y][elem.x] = HAVE_SHIP;
+    map[elem.y][elem.x] = SQUARE_STATE.HAVE_SHIP;
     markDiaganalElements(elem, map);
 }
 function markKilledShip(elem, map) {
@@ -86,7 +81,7 @@ function coordinateShip(elem, map) {
     for (const key of Object.keys(CHECK_ALL_WAY)) {
         let x = elem.x + CHECK_ALL_WAY[key].x;
         let y = elem.y + CHECK_ALL_WAY[key].y;
-        while (isOnField(x, y) && (map[y][x] == HAVE_SHIP || map[y][x] == KILLED)) {
+        while (isOnField(x, y) && (isHaveAnyShipSquare(map[y][x]))) {
             el[count++] = {
                 y: y,
                 x: x,
@@ -102,15 +97,36 @@ function markDiaganalElements(elem, map) {
     for (const key of Object.keys(CHECK_ALL_DIAGANAL_SQUARE)) {
         const x = elem.x + CHECK_ALL_DIAGANAL_SQUARE[key].x;
         const y = elem.y + CHECK_ALL_DIAGANAL_SQUARE[key].y;
-        if (isOnField(x, y) && map[y][x] == EMPTY) {
-            if (map[y][x] == EMPTY) {
-                map[y][x] = NO_SHIP_INV;
-            }
+        if (isOnField(x, y) && isEmptySquare(map[y][x])) {
+            map[y][x] = SQUARE_STATE.NO_SHIP_INV;
         }
     }
     return;
+}
+function isUntouchedSquare(state) {
+    return state == SQUARE_STATE.EMPTY || state == SQUARE_STATE.NO_SHIP_INV;
+}
+function isHaveShipSquare(state) {
+    return state == SQUARE_STATE.HAVE_SHIP || state == SQUARE_STATE.KILLED;
+}
+function isHaveAnyShipSquare(state) {
+    return state == SQUARE_STATE.HAVE_SHIP || state == SQUARE_STATE.KILLED;
+}
+function isEmptySquare(state) {
+    return state == SQUARE_STATE.EMPTY;
 }
 function compareEl(a, b) {
     if (a.x > b.x || a.y > b.y) return 1;
     if (a.x < b.x || a.y < b.y) return -1;
 }
+
+export {
+    markKilledShip,
+    markWhenWounded,
+    markDiaganalElements,
+    isVertical,
+    coordinateShip,
+    isUntouchedSquare,
+    isHaveShipSquare,
+    isEmptySquare,
+};

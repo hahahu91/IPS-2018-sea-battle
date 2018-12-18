@@ -1,4 +1,4 @@
-import {HAVE_SHIP, EMPTY, MY_FIELD, KILLED, TYPE_SHIPS, CHECK_ALL_WAY, CHECK_ALL_DIAGANAL_SQUARE} from './consts.js';
+import {SQUARE_STATE, MY_FIELD, TYPE_SHIPS, CHECK_ALL_WAY, CHECK_ALL_DIAGANAL_SQUARE} from './consts.js';
 import {countShip} from './GameController.js';
 import {checkIfAllShipsAreReady, isOnField} from './othersFunctions.js';
 import {coordinateShip} from './markSquare.js';
@@ -14,7 +14,7 @@ function addShip(map, ships, elem) {
         const typeShip = countShip(elem, map);
         if (typeShip != null) {
             if (!checkIfAllShipsAreReady(ships)) {
-                map[elem.y][elem.x] = HAVE_SHIP;
+                map[elem.y][elem.x] = SQUARE_STATE.HAVE_SHIP;
                 ships[typeShip]++;
                 const lenPrevShip = mostPartOfShip(elem, map, typeShip);
                 removePrevTypeShips(typeShip, lenPrevShip, ships);
@@ -64,13 +64,12 @@ function getShipsMap(map) {
     const ships = [];
     for (let i = 0; i < map.length; i++) {
         for (let j = 0; j < map[i].length; j++) {
-            if (map[i][j] == HAVE_SHIP || map[i][j] == KILLED) {
+            if (map[i][j] == SQUARE_STATE.HAVE_SHIP || map[i][j] == SQUARE_STATE.KILLED) {
                 const coord = coordinateShip({y: i, x: j}, map);
                 ships.push(coord);
             }
         }
     }
-
     return uniqFast(ships);
 }
 
@@ -114,7 +113,7 @@ function checkDiaganalElements(elem, map) {
     for (const key of Object.keys(CHECK_ALL_DIAGANAL_SQUARE)) {
         const x = elem.x + CHECK_ALL_DIAGANAL_SQUARE[key].x;
         const y = elem.y + CHECK_ALL_DIAGANAL_SQUARE[key].y;
-        if (isOnField(x, y) && map[y][x] == 1) {
+        if (isOnField(x, y) && map[y][x] == SQUARE_STATE.HAVE_SHIP) {
             return false;
         }
     }
@@ -122,7 +121,7 @@ function checkDiaganalElements(elem, map) {
 }
 function updateFieldWhenPlacing(map, ships, elem) {
     if (elem.field == MY_FIELD) {
-        (map[elem.y][elem.x] == HAVE_SHIP) ? removeDesk(map, ships, elem): addShip(map, ships, elem);
+        (map[elem.y][elem.x] == SQUARE_STATE.HAVE_SHIP) ? removeDesk(map, ships, elem): addShip(map, ships, elem);
     }
 }
 export {

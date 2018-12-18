@@ -1,23 +1,28 @@
-
-const WIDTH = 1000;
-const HEIGHT = 500;
 const CANVAS_SIZE = {
     WIDTH: 1000,
     HEIGHT: 500,
 };
-const NO_SHIP = -3;
-const NO_SHIP_INV = -2;
-const MISS = -1;
-const HAVE_SHIP = 1;
-const KILLED = 2;
-const EMPTY = 0;
-const END_FIELD = 9;
-const BEGIN_FIELD = 0;
+const SQUARE_STATE = {
+    NO_SHIP: -3,
+    NO_SHIP_INV: -2,
+    MISS: -1,
+    HAVE_SHIP: 1,
+    KILLED: 2,
+    EMPTY: 0,
+};
+const FIELD_BOUNDARIES = {
+    END: 9,
+    BEGIN: 0,
+};
+const GAME_STAGE = {
+    ARRANGEMENT: false,
+    READY: true,
+};
 const MY_FIELD = 0;
 const ENEMY_FIELD = 1;
-const WIDTH_SQUARE = HEIGHT/15;
+const WIDTH_SQUARE = CANVAS_SIZE.HEIGHT/15;
 const OFFSET_FIELD = {
-    x: Math.max((WIDTH-24*WIDTH_SQUARE)/2, 0) + WIDTH_SQUARE,
+    x: Math.max((CANVAS_SIZE.WIDTH-24*WIDTH_SQUARE)/2, 0) + WIDTH_SQUARE,
     y: 2 + WIDTH_SQUARE*4,
 };
 const BOX_WIDTH = WIDTH_SQUARE * 12;
@@ -50,14 +55,8 @@ const CHECK_ALL_DIAGANAL_SQUARE = {
 const LETTERS = ['а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'к'];
 
 export {
-    NO_SHIP,
-    NO_SHIP_INV,
-    MISS,
-    HAVE_SHIP,
-    KILLED,
-    EMPTY,
-    END_FIELD,
-    BEGIN_FIELD,
+    SQUARE_STATE,
+    FIELD_BOUNDARIES,
     MY_FIELD,
     ENEMY_FIELD,
     WIDTH_SQUARE,
@@ -70,9 +69,8 @@ export {
     CHECK_ALL_DIAGANAL_SQUARE,
     LETTERS,
     BOX_WIDTH,
-    WIDTH,
-    HEIGHT,
     CANVAS_SIZE,
+    GAME_STAGE,
 };
 
 
