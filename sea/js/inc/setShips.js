@@ -3,7 +3,7 @@ import {countShip} from './GameController.js';
 import {checkIfAllShipsAreReady, isOnField} from './othersFunctions.js';
 import {coordinateShip} from './markSquare.js';
 function removeDesk(map, ships, elem) {
-    map[elem.y][elem.x] = EMPTY;
+    map[elem.y][elem.x] = SQUARE_STATE.EMPTY;
     const typePrevShip = countShip(elem, map);
     const lengthCurShip = mostPartOfShip(elem, map, typePrevShip);
     ships[typePrevShip]--;

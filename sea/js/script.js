@@ -1,6 +1,6 @@
 export {player1};
 import {getRandomMap} from './inc/maps.js';
-import {CANVAS_SIZE,
+import {CANVAS_SIZE, MY_FIELD,
     ENEMY_FIELD, WIDTH_SQUARE, MY_MOVE, BOX_WIDTH, OFFSET_FIELD, GAME_STAGE} from './inc/consts.js';
 import {Game, startGame, handlerAttack} from './inc/GameController.js';
 import {draw, redrawAllFields} from './inc/drawFields.js';
@@ -10,7 +10,6 @@ import {isOnField} from './inc/othersFunctions.js';
 import {isClickRandomButton, isClickStartButton} from './inc/buttonsFunctions.js';
 
 const player1 = new Player;
-
 function main() {
     const canvas = document.getElementById('canvas');
     canvas.width = CANVAS_SIZE.WIDTH;
@@ -41,9 +40,9 @@ function updateField(event) {
 function searchElem(mouseCoordinates) {
     const xBegin = mouseCoordinates.x - OFFSET_FIELD.x + WIDTH_SQUARE;
     const yBegin = mouseCoordinates.y - OFFSET_FIELD.y + WIDTH_SQUARE;
-    let field = 0;
+    let field = MY_FIELD;
     if (xBegin > BOX_WIDTH) {
-        field = 1;
+        field = ENEMY_FIELD;
     };
     const x = parseInt((xBegin - BOX_WIDTH * field) / WIDTH_SQUARE);
     const y = parseInt(yBegin / WIDTH_SQUARE);

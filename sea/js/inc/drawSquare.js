@@ -45,7 +45,7 @@ function drawMissedSquare(ctx, x, y) {
     drawEmptySquareWithoutFrame(ctx, x, y);
     ctx.fillStyle = COLOR.PEN;
     ctx.font = FONT.BIG;
-    ctx.fillText('.', x + WIDTH_SQUARE / 2, y - WIDTH_SQUARE / 5);
+    ctx.fillText('.', x + WIDTH_SQUARE / 2, y);
     ctx.font = FONT.NORMAL;
 }
 function drawDeckSquare(ctx, x, y) {
@@ -59,6 +59,7 @@ function drawHitSquare(ctx, x, y) {
     ctx.font = FONT.NORMAL;
 }
 function drawEmptySquare(ctx, x, y) {
+    ctx.lineWidth = 3;
     ctx.fillStyle = COLOR.BACKGROUND;
     ctx.strokeStyle = COLOR.BORDER;
     ctx.strokeRect(x, y, WIDTH_SQUARE, WIDTH_SQUARE);

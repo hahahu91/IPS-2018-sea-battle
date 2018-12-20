@@ -1,8 +1,8 @@
 import {LETTERS, BOX_WIDTH, FIELD_BOUNDARIES, MY_FIELD,
-    ENEMY_FIELD, WIDTH_SQUARE, OFFSET_FIELD, GAME_STAGE} from './consts.js';
+    ENEMY_FIELD, WIDTH_SQUARE, OFFSET_FIELD, GAME_STAGE, CANVAS_SIZE} from './consts.js';
 import {FONT} from './const/font.js';
 import {COLOR} from './const/color.js';
-import {drawPlacementSquare, drawSquare, drawEmptySquare} from './drawSquare.js';
+import {drawSquare, drawEmptySquare} from './drawSquare.js';
 import {getShipsMap} from './setShips.js';
 import {isVertical} from './markSquare.js';
 import {Game} from './GameController.js';
@@ -13,7 +13,7 @@ function draw(ctx) {
 function createField(ctx) {
     const x = OFFSET_FIELD.x;
     const y = OFFSET_FIELD.y;
-    createCommonField(ctx, x - WIDTH_SQUARE, y - WIDTH_SQUARE*4, 24, 15);
+    createCommonField(ctx, x - WIDTH_SQUARE, y - WIDTH_SQUARE*4, CANVAS_SIZE.TOTAL_SQUARE.WIDTH, CANVAS_SIZE.TOTAL_SQUARE.HEIGHT);
     createOneField(ctx, x, y, MY_FIELD);
 }
 function createCommonField(ctx, xBegin, yBegin, width, height) {
@@ -53,36 +53,38 @@ function drawButton(ctx, normalX, normalY, button) {
     outerField(ctx, x, y, button.HEIGHT, button.WIDTH);
     ctx.fillText(button.NAME, xMid, yMid, button.WIDTH * WIDTH_SQUARE);
 };
+//drawMap переделать!
 function drawMap(ctx, map, field, needOuter = true) {
     const normalX = OFFSET_FIELD.x + field * (BOX_WIDTH);
     const normalY = OFFSET_FIELD.y;
     if (needOuter) {
         createCommonField(ctx, normalX, normalY, 10, 10);
     }
+
     if (Game.state == GAME_STAGE.ARRANGEMENT) {
-        const ships = getShipsMap(map);
-        getOuterShips(ctx, normalX, normalY, ships);
+        drawMapWhenArrangement(ctx, normalX, normalY, map);
     } else {
-        for (let i = 0; i < map.length; i++) {
-            for (let j = 0; j < map[i].length; j++) {
-                const x = normalX + j * WIDTH_SQUARE;
-                const y = normalY + i * WIDTH_SQUARE;
-                if (Game.state == GAME_STAGE.ARRANGEMENT) {
-                    if (field == MY_FIELD) {
-                        drawPlacementSquare(ctx, x, y, map[i][j]);
-                    };
-                } else {
-                    drawSquare(ctx, x, y, map[i][j]);
-                }
-            }
-        }
+        drawMapWhenGaming(ctx, normalX, normalY, map);
     }
 
     if (needOuter) {
         outerField(ctx, normalX, normalY, 10, 10);
     }
 }
-function getOuterShips(ctx, normalX, normalY, ships) {
+function drawMapWhenArrangement(ctx, x, y, map) {
+    const ships = getShipsMap(map);
+    drawOuterShips(ctx, x, y, ships);
+}
+function drawMapWhenGaming(ctx, normalX, normalY, map) {
+    for (let i = 0; i < map.length; i++) {
+        for (let j = 0; j < map[i].length; j++) {
+            const x = normalX + j * WIDTH_SQUARE;
+            const y = normalY + i * WIDTH_SQUARE;
+            drawSquare(ctx, x, y, map[i][j]);
+        }
+    }
+}
+function drawOuterShips(ctx, normalX, normalY, ships) {
     for (let i = 0; i < ships.length; i++) {
         const x = normalX + ships[i][0].x * WIDTH_SQUARE;
         const y = normalY + ships[i][0].y * WIDTH_SQUARE;
@@ -191,7 +193,7 @@ function getCurvePoints(pts) {
     let x; let y;
     let t1x; let t2x; let t1y; let t2y;
     let c1; let c2; let c3; let c4;
-    let st; let t; let i;
+    let st;
 
     _pts = pts.slice(0);
 
