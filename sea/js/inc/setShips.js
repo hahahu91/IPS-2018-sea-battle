@@ -1,4 +1,5 @@
-import {SQUARE_STATE, MY_FIELD, TYPE_SHIPS, CHECK_ALL_WAY, CHECK_ALL_DIAGANAL_SQUARE} from './consts.js';
+import {MY_FIELD, TYPE_SHIPS, CHECK_ALL_WAY, CHECK_ALL_DIAGANAL_SQUARE} from './consts.js';
+import {SQUARE_STATE} from './const/square_state.js';
 import {countShip} from './GameController.js';
 import {checkIfAllShipsAreReady, isOnField} from './othersFunctions.js';
 import {coordinateShip} from './markSquare.js';

@@ -1,4 +1,4 @@
-import {LETTERS, BOX_WIDTH, FIELD_BOUNDARIES, MY_FIELD,
+import {LETTERS, BOX_WIDTH, BORDER, MY_FIELD,
     ENEMY_FIELD, WIDTH_SQUARE, OFFSET_FIELD, GAME_STAGE, CANVAS_SIZE} from './consts.js';
 import {FONT} from './const/font.js';
 import {COLOR} from './const/color.js';
@@ -13,7 +13,9 @@ function draw(ctx) {
 function createField(ctx) {
     const x = OFFSET_FIELD.x;
     const y = OFFSET_FIELD.y;
-    createCommonField(ctx, x - WIDTH_SQUARE, y - WIDTH_SQUARE*4, CANVAS_SIZE.TOTAL_SQUARE.WIDTH, CANVAS_SIZE.TOTAL_SQUARE.HEIGHT);
+    const height = parseInt(CANVAS_SIZE.HEIGHT / WIDTH_SQUARE);
+    const width = parseInt(CANVAS_SIZE.WIDTH / WIDTH_SQUARE);
+    createCommonField(ctx, 0, 0, width + 1, height + 1);
     createOneField(ctx, x, y, MY_FIELD);
 }
 function createCommonField(ctx, xBegin, yBegin, width, height) {
@@ -60,13 +62,11 @@ function drawMap(ctx, map, field, needOuter = true) {
     if (needOuter) {
         createCommonField(ctx, normalX, normalY, 10, 10);
     }
-
     if (Game.state == GAME_STAGE.ARRANGEMENT) {
         drawMapWhenArrangement(ctx, normalX, normalY, map);
     } else {
         drawMapWhenGaming(ctx, normalX, normalY, map);
     }
-
     if (needOuter) {
         outerField(ctx, normalX, normalY, 10, 10);
     }
@@ -109,21 +109,21 @@ function createOneField(ctx, xBegin, yBegin, field = MY_FIELD) {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    for (let y = FIELD_BOUNDARIES.BEGIN; y <= FIELD_BOUNDARIES.END; y++) {
-        for (let x = FIELD_BOUNDARIES.BEGIN; x <= FIELD_BOUNDARIES.END; x++) {
+    for (let y = BORDER.BEGIN; y <= BORDER.END; y++) {
+        for (let x = BORDER.BEGIN; x <= BORDER.END; x++) {
             ctx.fillStyle = COLOR.PEN;
             const xMidSquare = xBegin + x * widthSquare + widthSquare / 2;
             const yMidSquare = yBegin + y * widthSquare + widthSquare / 2;
-            if (y == FIELD_BOUNDARIES.BEGIN) {
+            if (y == BORDER.BEGIN) {
                 ctx.fillText(LETTERS[x], xMidSquare, yBegin - widthSquare + widthSquare / 2);
             }
-            if (y == FIELD_BOUNDARIES.END) {
+            if (y == BORDER.END) {
                 ctx.fillText(LETTERS[x], xMidSquare, yMidSquare + widthSquare);
             }
-            if (x == FIELD_BOUNDARIES.END && field == ENEMY_FIELD) {
+            if (x == BORDER.END && field == ENEMY_FIELD) {
                 ctx.fillText(y + 1, xMidSquare + widthSquare, yMidSquare);
             }
-            if (x == FIELD_BOUNDARIES.BEGIN) {
+            if (x == BORDER.BEGIN) {
                 ctx.fillText(y + 1, xMidSquare - widthSquare, yMidSquare);
             }
             ctx.fillStyle = COLOR.BACKGROUND;

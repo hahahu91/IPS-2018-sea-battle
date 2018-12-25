@@ -1,8 +1,9 @@
 import {Player} from './Player.js';
 import {getRandomMap} from './maps.js';
 import {markKilledShip, markWhenWounded, markDiaganalElements, isEmptySquare} from './markSquare.js';
-import {SQUARE_STATE, FIELD_BOUNDARIES, MY_FIELD,
+import {BORDER, MY_FIELD,
     TYPE_SHIPS, MY_MOVE, ENEMY_MOVE, CHECK_ALL_WAY, GAME_STAGE} from './consts.js';
+import {SQUARE_STATE} from './const/square_state.js';
 import {player1} from './../script.js';
 import {prepareEnemyField} from './drawFields.js';
 import {getRandomInt, isNull, checkIfAllShipsAreReady, isOnField} from './othersFunctions.js';
@@ -170,8 +171,8 @@ function aI() {
         if (EnemyPrevHit.isHit) { //ранение было добиваем
             el = killShip(EnemyPrevHit, player1.EnemyMoves);
         } else {
-            el.x = getRandomInt(FIELD_BOUNDARIES.BEGIN, FIELD_BOUNDARIES.END + 1);
-            el.y = getRandomInt(FIELD_BOUNDARIES.BEGIN, FIELD_BOUNDARIES.END + 1);
+            el.x = getRandomInt(BORDER.BEGIN, BORDER.END + 1);
+            el.y = getRandomInt(BORDER.BEGIN, BORDER.END + 1);
         }
     } while (player1.EnemyMoves[el.y][el.x] != SQUARE_STATE.EMPTY);
     if (player1.MyMap[el.y][el.x] == SQUARE_STATE.HAVE_SHIP) {

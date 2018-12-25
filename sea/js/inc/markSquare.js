@@ -1,10 +1,11 @@
-import {SQUARE_STATE, FIELD_BOUNDARIES, CHECK_ALL_WAY, CHECK_ALL_DIAGANAL_SQUARE} from './consts.js';
+import {BORDER, CHECK_ALL_WAY, CHECK_ALL_DIAGANAL_SQUARE} from './consts.js';
+import {SQUARE_STATE} from './const/square_state.js';
 import {isOnField} from './othersFunctions.js';
 
 function markHorizontalShipOrOneDeckShip(coord, map) {
     let i = 0;
     const lenShip = coord.length;
-    if (coord[i].x != FIELD_BOUNDARIES.BEGIN) {
+    if (coord[i].x != BORDER.BEGIN) {
         markHorizontalElem(map, coord[i].y, coord[i].x - 1);
     }
     while (i < lenShip) {
@@ -12,14 +13,14 @@ function markHorizontalShipOrOneDeckShip(coord, map) {
         markHorizontalElem(map, coord[i].y, coord[i].x);
         i++;
     }
-    if (coord[i - 1].x != FIELD_BOUNDARIES.END) {
+    if (coord[i - 1].x != BORDER.END) {
         markHorizontalElem(map, coord[i - 1].y, coord[i - 1].x + 1);
     }
 }
 function markVerticalShip(coord, map) {
     let i = 0;
     const lenShip = coord.length;
-    if (coord[i].y != FIELD_BOUNDARIES.BEGIN) {
+    if (coord[i].y != BORDER.BEGIN) {
         markVerticalElem(map, coord[i].y - 1, coord[i].x);
     }
     while (i < lenShip) {
@@ -27,7 +28,7 @@ function markVerticalShip(coord, map) {
         markVerticalElem(map, coord[i].y, coord[i].x);
         i++;
     }
-    if (coord[i - 1].y != FIELD_BOUNDARIES.END) {
+    if (coord[i - 1].y != BORDER.END) {
         markVerticalElem(map, coord[i - 1].y + 1, coord[i - 1].x);
     }
 }
@@ -35,10 +36,10 @@ function markHorizontalElem(map, y, x) {
     if (isUntouchedSquare(map[y][x])) {
         map[y][x] = SQUARE_STATE.NO_SHIP;
     }
-    if (y != FIELD_BOUNDARIES.BEGIN && (isUntouchedSquare(map[y - 1][x]))) {
+    if (y != BORDER.BEGIN && (isUntouchedSquare(map[y - 1][x]))) {
         map[y - 1][x] = SQUARE_STATE.NO_SHIP;
     }
-    if (y != FIELD_BOUNDARIES.END && (isUntouchedSquare(map[y + 1][x]))) {
+    if (y != BORDER.END && (isUntouchedSquare(map[y + 1][x]))) {
         map[y + 1][x] = SQUARE_STATE.NO_SHIP;
     }
 }
@@ -46,10 +47,10 @@ function markVerticalElem(map, y, x) {
     if (isUntouchedSquare(map[y][x])) {
         map[y][x] = SQUARE_STATE.NO_SHIP;
     }
-    if (x != FIELD_BOUNDARIES.BEGIN && (isUntouchedSquare(map[y][x - 1]))) {
+    if (x != BORDER.BEGIN && (isUntouchedSquare(map[y][x - 1]))) {
         map[y][x - 1] = SQUARE_STATE.NO_SHIP;
     }
-    if (x != FIELD_BOUNDARIES.END && (isUntouchedSquare(map[y][x + 1]))) {
+    if (x != BORDER.END && (isUntouchedSquare(map[y][x + 1]))) {
         map[y][x + 1] = SQUARE_STATE.NO_SHIP;
     }
 }

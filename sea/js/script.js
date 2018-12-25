@@ -14,6 +14,7 @@ function main() {
     const canvas = document.getElementById('canvas');
     canvas.width = CANVAS_SIZE.WIDTH;
     canvas.height = CANVAS_SIZE.HEIGHT;
+    //console.log(canvas.width);
     const ctx = canvas.getContext('2d');
     canvas.addEventListener('mousedown', updateField, false);
     draw(ctx);
@@ -74,7 +75,6 @@ function updateOneField(elem) {
         handlerAttack(player1.EnemyMap, player1.EnemyShips, elem);
     }
 }
-
 
 function mouseCoordinates(canvas, event) {
     const tempX = event.pageX - canvas.offsetLeft;

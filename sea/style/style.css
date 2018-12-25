@@ -1,12 +1,15 @@
 
+body {
+    background-image: url(./../img/back.png);
+}
 .canvas-wrapper {
     width: 100%;
     height: 100%;
 }
 
 .canvas {
-    width: 1000px;
-    height: 500px;
+    /*width: 1000px;
+    height: 500px; */
     position: absolute;
     top: 0;
     bottom: 0;
@@ -15,25 +18,37 @@
     margin: 0 auto;
 }
 .container {
-    background-image: url("./../img/BackA.jpg");
+    background-image: url("./../img/BackIndex.png");
     background-repeat: no-repeat;
     background-size: 100%;
     width: 1024px;
     height: 800px;
     margin: 0 auto;
+    position: relative;
 }
 .clearfix:after {
     content: "";
     display: table;
     clear: both;
 }
+.buttons:nth-child(1) {
+    float: left;
+}
+.buttons:nth-child(2) {
+    float: right;
+}
+.begin {
+    text-align: center;
+}
 .form-3 {
+    text-transform: uppercase;
     font-family: 'Mistral', 'Lato', script;
     font-weight: 400;
     /* Size and position */
     width: 300px;
+    float: center;
     position: relative;
-    margin: 60px auto 30px;
+    margin: 0 auto 30px;
     padding: 10px;
     overflow: auto;
     color: #4847b3;
@@ -60,16 +75,18 @@
 .form-3 input[type=text],
 .form-3 input[type=password] {
     /* Size and position */
-    
+    text-transform: uppercase;
     width: 50%;
     float: left;
-    padding: 8px 5px;
-    margin-bottom: 10px;
-    font-size: 12px;
- 
+    padding: 5px 10px 0 ;
+    margin-bottom: 5px;
+    font-size: 25px;
+    color: #4847b3;
+    font-family: 'Mistral', 'Lato', script;
+    appearance: none;
     /* Styles */
     border: none;
-    background: transparent;
+    background-color: transparent;
 }
 .form-3 p:nth-child(1) {
     background-image: url(./../img/backLog.png);
@@ -90,9 +107,9 @@
     float: left;
     width: 130px;
     height: 50px;
-    margin: 7px 0 0 -7px;
+    margin: 4px 0 0 -4px;
     background-image: url(./../img/backReg.png);
-    background-size: 99%;
+    background-size: 105%;
     background-position: -3px 3px;
     background-repeat: no-repeat;
     overflow: auto;
@@ -107,8 +124,11 @@
     background-repeat: no-repeat;
     overflow: auto;
 }
-.form-3 label[for=registration] {
+.form-3 a[for=registration] {
     /*width: auto; */
+    text-align: center;
+    cursor: pointer;
+    padding-top: 9px;
     float: none;
     display: inline-block;
     text-transform: capitalize;
@@ -116,13 +136,8 @@
     font-weight: 400;
     letter-spacing: 0px;
     text-indent: 2px;
-    text-decoration: underline;
 }
-.form-3 label[for=registration]:hover {
-    /*width: auto; 
-    margin-left: -10px;
-    text-transform: capitalize;*/
-    font-size: 24px;
+.form-3 a[for=registration]:hover {
     font-weight: 800;
     letter-spacing: 0px;
     text-indent: 2px;
@@ -130,6 +145,7 @@
 
 .form-3 input:focus {
     border: none;
+    transition: 0.2s ease-in-out;
 }
 .form-3 input[type=submit] {
     /* Width and position */
@@ -141,17 +157,121 @@
     background: transparent;
     cursor:pointer;
     color: #4847b3;
-    font-weight: 700;
+    font-weight: 400;
     font-size: 25px;
     font-family: 'Mistral', 'Lato', script;
     /* Font styles */
 }
 
  
-.form-3 input[type=submit]:active {
-    background: #287db5;
+.form-3 input[type=submit]:hover {
+    font-weight: 800;
 }
 input:focus
 {
     outline:none;
 }
+
+.form {
+    font-weight: 700;
+    font-size: 30px;
+    color: #4847b3;
+    font-family: 'Mistral', 'Lato', script;
+    /*background-image: url("./../img/backgroundLeft.JPG");
+    background-repeat: no-repeat;
+    background-size: 100%; */
+    width: 1024px;
+    height: 800px;
+    margin: 0 auto;
+    padding: 40px;
+}
+.form h2 {
+    text-align: center;
+}
+
+.setting_layout {
+    position: relative;
+    width: 550px;
+    height: 250px;
+    margin: 0 auto;
+}
+.setting_layout div{
+    float: left;
+    margin-bottom: 20px;
+}
+.setting_layout div:nth-child(2){
+    margin-left: 25px;
+}
+
+.check-container {
+    display: block;
+    position: relative;
+    width: 220px;
+    height: 20px;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  /* Hide the browser's default checkbox */
+  .check-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+  
+  /* Create a custom checkbox */
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-image: url(./../img/checkBox.png);
+    background-size: 100%;
+
+  }
+  
+  .check-container {
+      transition: 0.2s ease-in-out;
+  }
+
+  /* On mouse-over, add a grey background color */
+  .check-container:hover input ~ .checkmark {
+    height: 26x;
+    width: 26px;
+  }
+  .check-container:hover {
+    font-size: 24px;
+  }
+  /* When the checkbox is checked, add a blue background */
+  .check-container input:checked ~ .checkmark {
+    background-image: url(./../img/checkBoxActive.png);
+    background-size: 100%;
+  }
+  .check-container input[type="radio"]:checked ~ .checkmark {
+    background-image: url(./../img/radioActive.png);
+    background-size: 100%;
+  }
+  .fleet {
+      margin-left: 30%;
+  }
+  /* Create the checkmark/indicator (hidden when not checked) */
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  /* Show the checkmark when checked */
+  .check-container input:checked ~ .checkmark:after {
+    display: block;
+  }
+  

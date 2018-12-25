@@ -1,20 +1,17 @@
 const CANVAS_SIZE = {
-    WIDTH: 1000,
-    HEIGHT: 500,
+    WIDTH: document.documentElement.clientWidth,
+    HEIGHT: document.documentElement.clientHeight,
     TOTAL_SQUARE: {
         HEIGHT: 15,
         WIDTH: 24,
     },
 };
-const SQUARE_STATE = {
-    NO_SHIP: -3,
-    NO_SHIP_INV: -2,
-    MISS: -1,
-    HAVE_SHIP: 1,
-    KILLED: 2,
-    EMPTY: 0,
-};
-const FIELD_BOUNDARIES = {
+function getWidthSquare() {
+    const h = CANVAS_SIZE.HEIGHT / CANVAS_SIZE.TOTAL_SQUARE.HEIGHT;
+    const w = CANVAS_SIZE.WIDTH / CANVAS_SIZE.TOTAL_SQUARE.WIDTH;
+    return Math.min(h, w, 40);
+}
+const BORDER = {
     END: 9,
     BEGIN: 0,
 };
@@ -24,11 +21,15 @@ const GAME_STAGE = {
 };
 const MY_FIELD = 0;
 const ENEMY_FIELD = 1;
-const WIDTH_SQUARE = CANVAS_SIZE.HEIGHT / CANVAS_SIZE.TOTAL_SQUARE.HEIGHT;
+const WIDTH_SQUARE = getWidthSquare();
 const OFFSET_FIELD = {
-    x: Math.max((CANVAS_SIZE.WIDTH-CANVAS_SIZE.TOTAL_SQUARE.WIDTH * WIDTH_SQUARE) / 2, 0) + WIDTH_SQUARE,
-    y: 2 + WIDTH_SQUARE*4,
+    x: getOffsetX(),
+    y: WIDTH_SQUARE * 4,
 };
+function getOffsetX() {
+    const x = parseInt(Math.max((CANVAS_SIZE.WIDTH-CANVAS_SIZE.TOTAL_SQUARE.WIDTH * WIDTH_SQUARE) / 2, 0) / WIDTH_SQUARE);
+    return x * WIDTH_SQUARE + WIDTH_SQUARE;
+}
 const BOX_WIDTH = WIDTH_SQUARE * CANVAS_SIZE.TOTAL_SQUARE.WIDTH / 2;
 const TYPE_SHIPS = {
     1: 'oneDesk',
@@ -59,8 +60,7 @@ const CHECK_ALL_DIAGANAL_SQUARE = {
 const LETTERS = ['а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'к'];
 
 export {
-    SQUARE_STATE,
-    FIELD_BOUNDARIES,
+    BORDER,
     MY_FIELD,
     ENEMY_FIELD,
     WIDTH_SQUARE,

@@ -1,11 +1,12 @@
+import {WIDTH_SQUARE} from "./../consts.js";
 export const FONT = {
     FAMILY: 'Mistral',
     ALTERNATE: 'Arial',
-    SIZE: 45,
-    SIZE_BIG: 75,
-    SIZE_SMALL: 25,
-    NORMAL: `45px Mistral`,
-    NORMAL_ALTERNATE: `45px Arial`,
-    BIG: `75px Arial Bold`,
-    SMALL: `25px Mistral`,
+    SIZE: WIDTH_SQUARE * 1.2,
+    SIZE_BIG: WIDTH_SQUARE * 1.7,
+    SIZE_SMALL: WIDTH_SQUARE,
+    NORMAL: `${WIDTH_SQUARE}px Mistral`,
+    NORMAL_ALTERNATE: `${WIDTH_SQUARE}px Arial`,
+    BIG: `${WIDTH_SQUARE * 1.7}px Arial Bold`,
+    SMALL: `${WIDTH_SQUARE}px Mistral`,
 };

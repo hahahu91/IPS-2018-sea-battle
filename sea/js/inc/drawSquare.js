@@ -1,4 +1,5 @@
-import {SQUARE_STATE, WIDTH_SQUARE} from './consts.js';
+import {WIDTH_SQUARE} from './consts.js';
+import {SQUARE_STATE} from './const/square_state.js';
 import {FONT} from './const/font.js';
 import {COLOR} from './const/color.js';
 import {outerField} from './drawFields.js';
