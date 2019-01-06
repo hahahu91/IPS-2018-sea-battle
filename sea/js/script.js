@@ -1,12 +1,11 @@
-export {player1};
 import {getRandomMap} from './inc/maps.js';
-import {CANVAS_SIZE, MY_FIELD,
-    ENEMY_FIELD, WIDTH_SQUARE, MY_MOVE, BOX_WIDTH, OFFSET_FIELD, GAME_STAGE} from './inc/consts.js';
+import {CANVAS_SIZE, WIDTH_SQUARE, MY_MOVE, BOX_WIDTH, OFFSET_FIELD, GAME_STAGE} from './inc/consts.js';
+import {FIELDS} from './inc/const/fields.js';
 import {Game, startGame, handlerAttack} from './inc/GameController.js';
 import {draw, redrawAllFields} from './inc/drawFields.js';
 import {Player} from './inc/Player.js';
 import {updateFieldWhenPlacing} from './inc/setShips.js';
-import {isOnField} from './inc/othersFunctions.js';
+import {isOnField} from './inc/checksFunctions.js';
 import {isClickRandomButton, isClickStartButton} from './inc/buttonsFunctions.js';
 
 const player1 = new Player;
@@ -14,15 +13,10 @@ function main() {
     const canvas = document.getElementById('canvas');
     canvas.width = CANVAS_SIZE.WIDTH;
     canvas.height = CANVAS_SIZE.HEIGHT;
-    //console.log(canvas.width);
     const ctx = canvas.getContext('2d');
     canvas.addEventListener('mousedown', updateField, false);
     draw(ctx);
-    let lastTimestamp = Date.now();
     const animateFn = () => {
-        const currentTimeStamp = Date.now();
-        const deltaTime = (currentTimeStamp - lastTimestamp) * 0.001;
-        lastTimestamp = currentTimeStamp;
         redrawAllFields(ctx, player1);
         if (!Game.finish) {
             requestAnimationFrame(animateFn);
@@ -41,9 +35,9 @@ function updateField(event) {
 function searchElem(mouseCoordinates) {
     const xBegin = mouseCoordinates.x - OFFSET_FIELD.x + WIDTH_SQUARE;
     const yBegin = mouseCoordinates.y - OFFSET_FIELD.y + WIDTH_SQUARE;
-    let field = MY_FIELD;
+    let field = FIELDS.MY;
     if (xBegin > BOX_WIDTH) {
-        field = ENEMY_FIELD;
+        field = FIELDS.ENEMY;
     };
     const x = parseInt((xBegin - BOX_WIDTH * field) / WIDTH_SQUARE);
     const y = parseInt(yBegin / WIDTH_SQUARE);
@@ -71,7 +65,7 @@ function updateOneField(elem) {
     if (Game.state == GAME_STAGE.ARRANGEMENT) {
         checkButtons(elem);
         updateFieldWhenPlacing(player1.MyMap, player1.MyShips, elem);
-    } else if (elem.field == ENEMY_FIELD && Game.move == MY_MOVE && !Game.finish) {
+    } else if (elem.field == FIELDS.ENEMY && Game.move == MY_MOVE && !Game.finish) {
         handlerAttack(player1.EnemyMap, player1.EnemyShips, elem);
     }
 }
@@ -86,3 +80,5 @@ function mouseCoordinates(canvas, event) {
 }
 
 main();
+
+export {player1};

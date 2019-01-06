@@ -1,6 +1,7 @@
-import {BORDER, CHECK_ALL_WAY, CHECK_ALL_DIAGANAL_SQUARE} from './consts.js';
+import {BORDER} from './consts.js';
+import {CHECK_ALL_WAY, CHECK_ALL_DIAGANAL_SQUARE} from './const/check.js';
 import {SQUARE_STATE} from './const/square_state.js';
-import {isOnField} from './othersFunctions.js';
+import {isOnField} from './checksFunctions.js';
 
 function markHorizontalShipOrOneDeckShip(coord, map) {
     let i = 0;

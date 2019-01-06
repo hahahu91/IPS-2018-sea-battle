@@ -1,12 +1,14 @@
 import {Player} from './Player.js';
 import {getRandomMap} from './maps.js';
 import {markKilledShip, markWhenWounded, markDiaganalElements, isEmptySquare} from './markSquare.js';
-import {BORDER, MY_FIELD,
-    TYPE_SHIPS, MY_MOVE, ENEMY_MOVE, CHECK_ALL_WAY, GAME_STAGE} from './consts.js';
+import {BORDER, TYPE_SHIPS, MY_MOVE, ENEMY_MOVE, GAME_STAGE} from './consts.js';
+import {CHECK_ALL_WAY} from './const/check.js';
+import {FIELDS} from './const/fields.js';
 import {SQUARE_STATE} from './const/square_state.js';
 import {player1} from './../script.js';
 import {prepareEnemyField} from './drawFields.js';
-import {getRandomInt, isNull, checkIfAllShipsAreReady, isOnField} from './othersFunctions.js';
+import {isNull, checkIfAllShipsAreReady, isOnField} from './checksFunctions.js';
+import {getRandomInt} from './mathFunctions.js';
 
 const Game = {
     state: GAME_STAGE.ARRANGEMENT, //or ready
@@ -154,7 +156,7 @@ function killShip(elem, map) {
                 return {
                     y: y,
                     x: x,
-                    field: MY_FIELD,
+                    field: FIELDS.MY,
                 };
             }
         }

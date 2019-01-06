@@ -1,7 +1,9 @@
-import {MY_FIELD, TYPE_SHIPS, CHECK_ALL_WAY, CHECK_ALL_DIAGANAL_SQUARE} from './consts.js';
+import {TYPE_SHIPS} from './consts.js';
+import {CHECK_ALL_WAY, CHECK_ALL_DIAGANAL_SQUARE} from './const/check.js';
+import {FIELDS} from './const/fields.js';
 import {SQUARE_STATE} from './const/square_state.js';
 import {countShip} from './GameController.js';
-import {checkIfAllShipsAreReady, isOnField} from './othersFunctions.js';
+import {checkIfAllShipsAreReady, isOnField} from './checksFunctions.js';
 import {coordinateShip} from './markSquare.js';
 function removeDesk(map, ships, elem) {
     map[elem.y][elem.x] = SQUARE_STATE.EMPTY;
@@ -121,7 +123,7 @@ function checkDiaganalElements(elem, map) {
     return true;
 }
 function updateFieldWhenPlacing(map, ships, elem) {
-    if (elem.field == MY_FIELD) {
+    if (elem.field == FIELDS.MY) {
         (map[elem.y][elem.x] == SQUARE_STATE.HAVE_SHIP) ? removeDesk(map, ships, elem): addShip(map, ships, elem);
     }
 }

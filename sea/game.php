@@ -1,7 +1,4 @@
 <?php
 require_once('inc/common.inc.php');
-$vars1 = array(
-    'name' => 'Stephen King', 
-    'books' => array(
-        'Pet Sematary', 'Christine', 'Needful Things'));
+$vars1 = array();
 echo getView('game.inc.twig', $vars1);

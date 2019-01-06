@@ -46,7 +46,7 @@ function drawMissedSquare(ctx, x, y) {
     drawEmptySquareWithoutFrame(ctx, x, y);
     ctx.fillStyle = COLOR.PEN;
     ctx.font = FONT.BIG;
-    ctx.fillText('.', x + WIDTH_SQUARE / 2, y);
+    ctx.fillText('.', x + WIDTH_SQUARE * 0.5, y + WIDTH_SQUARE * 0.1);
     ctx.font = FONT.NORMAL;
 }
 function drawDeckSquare(ctx, x, y) {
@@ -78,7 +78,6 @@ function drawScratched(ctx, x, y) {
     for (let i = 0; i < 5; i++) {
         ctx.lineTo(x + WIDTH_SQUARE/8 * i, y);
         ctx.lineTo(x, y + WIDTH_SQUARE/4 * i);
-        // x  = 20  y 40
     }
     for (let i = 1; i < 5; i++) {
         ctx.lineTo(x + WIDTH_SQUARE/2 + i * WIDTH_SQUARE/8, y);
@@ -87,7 +86,6 @@ function drawScratched(ctx, x, y) {
     for (let i = 1; i < 5; i++) {
         ctx.lineTo(x + WIDTH_SQUARE, y + WIDTH_SQUARE/4 * i);
         ctx.lineTo(x + WIDTH_SQUARE/2 + WIDTH_SQUARE/8 * i, y + WIDTH_SQUARE);
-        // x  = 20  y 40
     }
     ctx.stroke();
 }

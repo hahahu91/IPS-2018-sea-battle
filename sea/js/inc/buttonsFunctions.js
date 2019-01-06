@@ -1,13 +1,19 @@
 import {BUTTONS} from './const/buttons.js';
-import {ENEMY_FIELD} from './consts.js';
+import {FIELDS} from './const/fields.js';
 function isClickRandomButton(elem) {
-    return elem.field == ENEMY_FIELD && isButton(elem, BUTTONS.RANDOM.BEGIN.x, BUTTONS.RANDOM.BEGIN.y, BUTTONS.RANDOM.WIDTH, BUTTONS.RANDOM.HEIGHT);
+    const isClick = isButton(elem, BUTTONS.RANDOM);
+    return elem.field == FIELDS.ENEMY && isClick;
 }
 function isClickStartButton(elem) {
-    return elem.field == ENEMY_FIELD && isButton(elem, BUTTONS.START.BEGIN.x, BUTTONS.START.BEGIN.y, BUTTONS.START.WIDTH, BUTTONS.START.HEIGHT);
+    const isClick = isButton(elem, BUTTONS.START);
+    return elem.field == FIELDS.ENEMY && isClick;
 }
-function isButton(elem, xBegin, yBegin, width, height) {
-    return elem.x >= xBegin && elem.y >= yBegin && elem.x <= xBegin + width && elem.y <= yBegin + height;
+function isButton(elem, button) {
+    const xBegin = button.BEGIN.x;
+    const yBegin = button.BEGIN.y;
+    const xEnd = button.BEGIN.x + button.WIDTH;
+    const yEnd = button.BEGIN.y + button.HEIGHT;
+    return elem.x >= xBegin && elem.y >= yBegin && elem.x <= xEnd && elem.y <= yEnd;
 };
 export {
     isClickRandomButton,

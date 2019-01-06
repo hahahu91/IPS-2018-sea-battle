@@ -1,6 +1,6 @@
-import {LETTERS, BOX_WIDTH, BORDER, MY_FIELD,
-    ENEMY_FIELD, WIDTH_SQUARE, OFFSET_FIELD, GAME_STAGE, CANVAS_SIZE} from './consts.js';
+import {LETTERS, BOX_WIDTH, BORDER, WIDTH_SQUARE, OFFSET_FIELD, GAME_STAGE, CANVAS_SIZE} from './consts.js';
 import {FONT} from './const/font.js';
+import {FIELDS} from './const/fields.js';
 import {COLOR} from './const/color.js';
 import {drawSquare, drawEmptySquare} from './drawSquare.js';
 import {getShipsMap} from './setShips.js';
@@ -16,7 +16,7 @@ function createField(ctx) {
     const height = parseInt(CANVAS_SIZE.HEIGHT / WIDTH_SQUARE);
     const width = parseInt(CANVAS_SIZE.WIDTH / WIDTH_SQUARE);
     createCommonField(ctx, 0, 0, width + 1, height + 1);
-    createOneField(ctx, x, y, MY_FIELD);
+    createOneField(ctx, x, y, FIELDS.MY);
 }
 function createCommonField(ctx, xBegin, yBegin, width, height) {
     for (let y = 0; y < height; y++) {
@@ -27,11 +27,11 @@ function createCommonField(ctx, xBegin, yBegin, width, height) {
 }
 function redrawAllFields(ctx, player) {
     if (Game.state == GAME_STAGE.ARRANGEMENT) {
-        drawMap(ctx, player.MyMap, MY_FIELD);
+        drawMap(ctx, player.MyMap, FIELDS.MY);
         drawField2WhenPlacement(ctx);
     } else {
-        drawMap(ctx, player.EnemyMap, ENEMY_FIELD);
-        drawMap(ctx, player.EnemyMoves, MY_FIELD, false);
+        drawMap(ctx, player.EnemyMap, FIELDS.ENEMY);
+        drawMap(ctx, player.EnemyMoves, FIELDS.MY, false);
     }
 }
 function drawField2WhenPlacement(ctx) {
@@ -101,9 +101,9 @@ function prepareEnemyField() {
     const normalX = OFFSET_FIELD.x + BOX_WIDTH;
     const normalY = OFFSET_FIELD.y;
 
-    createOneField(ctx, normalX, normalY, ENEMY_FIELD);
+    createOneField(ctx, normalX, normalY, FIELDS.ENEMY);
 }
-function createOneField(ctx, xBegin, yBegin, field = MY_FIELD) {
+function createOneField(ctx, xBegin, yBegin, field = FIELDS.MY) {
     const widthSquare = WIDTH_SQUARE;
     ctx.font = FONT.NORMAL;
     ctx.textAlign = 'center';
@@ -120,7 +120,7 @@ function createOneField(ctx, xBegin, yBegin, field = MY_FIELD) {
             if (y == BORDER.END) {
                 ctx.fillText(LETTERS[x], xMidSquare, yMidSquare + widthSquare);
             }
-            if (x == BORDER.END && field == ENEMY_FIELD) {
+            if (x == BORDER.END && field == FIELDS.ENEMY) {
                 ctx.fillText(y + 1, xMidSquare + widthSquare, yMidSquare);
             }
             if (x == BORDER.BEGIN) {
@@ -133,7 +133,6 @@ function createOneField(ctx, xBegin, yBegin, field = MY_FIELD) {
         }
     }
 }
-
 function outerField(ctx, xBegin, yBegin, height, width) {
     const widthSquare = WIDTH_SQUARE;
     ctx.strokeStyle = COLOR.PEN;

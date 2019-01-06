@@ -1,4 +1,4 @@
-import {WIDTH_SQUARE} from "./../consts.js";
+import {WIDTH_SQUARE} from './../consts.js';
 export const FONT = {
     FAMILY: 'Mistral',
     ALTERNATE: 'Arial',
