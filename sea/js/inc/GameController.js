@@ -139,7 +139,7 @@ function enemyMove() {
         if (hit) {
             setTimeout(function() {
                 enemyMove();
-            }, 500);
+            }, 700);
         }
     }
 }
@@ -170,7 +170,7 @@ function aI() {
         field: 0,
     };
     do {
-        if (EnemyPrevHit.isHit) { //ранение было добиваем
+        if (EnemyPrevHit.isHit) {
             el = killShip(EnemyPrevHit, player1.EnemyMoves);
         } else {
             el.x = getRandomInt(BORDER.BEGIN, BORDER.END + 1);

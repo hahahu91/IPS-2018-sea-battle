@@ -26,6 +26,28 @@ body {
     margin: 0 auto;
     position: relative;
 }
+.setting {
+    background: none;
+}
+.back-button {
+    border: none; 
+    cursor:pointer;
+    background: transparent;
+    background-image: url("./../img/backButton.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+    width: 84px;
+    height: 68px;
+    position: absolute;
+    left:0;
+    top: 0;
+}
+.back-button:hover,
+.back-button:active,
+.back-button:focus {
+    outline:none;
+    cursor:pointer;
+}
 .clearfix:after {
     content: "";
     display: table;
@@ -38,8 +60,25 @@ body {
     float: right;
 }
 .begin {
+    position: absolute;
+    left: 0; 
+    right: 0; 
+    top: 150px;
+    margin: 0 auto; 
     text-align: center;
 }
+#parrent {
+    position:relative;
+    display: none;
+
+}
+#child{
+    position:absolute;
+    top:10px;
+    left:10px;
+    display: block;
+}
+
 .form-3 {
     text-transform: uppercase;
     font-family: 'Mistral', 'Lato', script;
@@ -67,7 +106,7 @@ body {
     font-size: 16px;
     text-transform: uppercase;
     letter-spacing: 1px;
-    text-indent: 10px;
+    /*text-indent: 10px; */
     font-weight: 700;
     cursor: pointer;
 }
@@ -88,22 +127,22 @@ body {
     border: none;
     background-color: transparent;
 }
-.form-3 p:nth-child(1) {
+.form-3>.log-form {
     background-image: url(./../img/backLog.png);
     background-size: 53%;
-    background-position: 90px;
+    background-position: 83px;
     background-repeat: no-repeat;
     overflow: auto;
 }
-.form-3 p:nth-child(2) {
+.form-3>.pas-form {
     margin-top: 25px;
     background-image: url(./../img/backPas.png);
     background-size: 53%;
-    background-position: 90px;
+    background-position: 83px;
     background-repeat: no-repeat;
     overflow: auto;
 }
-.form-3 p:nth-child(3) {
+.form-3>.reg-form {
     float: left;
     width: 130px;
     height: 50px;
@@ -114,7 +153,36 @@ body {
     background-repeat: no-repeat;
     overflow: auto;
 }
-.form-3 p:nth-child(4) {
+a {
+    text-decoration: none;
+    color: #4847b3;
+}
+.registration>.reg-form {
+    width: 168px;
+    height: 60px;
+    margin: 3px 0 0 -3px;
+    padding: 11px 0 0 11px;
+    background-size: 100%;
+    background-position: 0px 3px;
+}
+.registration .log-form {
+    background-size: 53%;
+    background-position: 83px;
+}
+.registration .pas-form {
+    margin-top: 15px; 
+    background-size: 53%;
+    background-position: 83px;
+}
+.registration input[type=text],
+.registration input[type=password] {
+    width: 44%; 
+}
+.registration h2 {
+    margin-left: 20px;
+}
+
+.form-3>.sub-form {
     float: left;
     width: 45%;
     margin: 7px 0 0 13px;
@@ -123,6 +191,9 @@ body {
     background-position: 20px;
     background-repeat: no-repeat;
     overflow: auto;
+}
+.registration p {
+    background-position: 87px;
 }
 .form-3 a[for=registration] {
     /*width: auto; */
@@ -160,14 +231,18 @@ body {
     font-weight: 400;
     font-size: 25px;
     font-family: 'Mistral', 'Lato', script;
-    /* Font styles */
 }
-
+.reg-form input[type=submit] {
+    font-size: 20px;
+}
  
 .form-3 input[type=submit]:hover {
     font-weight: 800;
 }
-input:focus
+input:focus,
+input:active,
+input:focus-within,
+input:hover
 {
     outline:none;
 }
@@ -177,9 +252,6 @@ input:focus
     font-size: 27px;
     color: #4847b3;
     font-family: 'Mistral', 'Lato', script;
-    /*background-image: url("./../img/backgroundLeft.JPG");
-    background-repeat: no-repeat;
-    background-size: 100%; */
     width: 1024px;
     height: 800px;
     margin: 0 auto;
@@ -187,6 +259,7 @@ input:focus
 }
 .form h2 {
     text-align: center;
+    margin-left: -67px;
 }
 
 .setting_layout {
@@ -220,10 +293,6 @@ input:focus
   .check_setting {
       margin-left: 20px;
       width: 240px;
-  }
-  .fleet {
-      margin-top: 10px;
-      margin-left: 31%;
   }
   /* Hide the browser's default checkbox */
   .check-container input {
@@ -279,3 +348,6 @@ input:focus
     display: block;
   }
   
+  .error {
+      color: red !important;
+  }

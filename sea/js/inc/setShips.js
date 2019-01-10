@@ -5,6 +5,7 @@ import {SQUARE_STATE} from './const/square_state.js';
 import {countShip} from './GameController.js';
 import {checkIfAllShipsAreReady, isOnField} from './checksFunctions.js';
 import {coordinateShip} from './markSquare.js';
+
 function removeDesk(map, ships, elem) {
     map[elem.y][elem.x] = SQUARE_STATE.EMPTY;
     const typePrevShip = countShip(elem, map);
@@ -124,7 +125,9 @@ function checkDiaganalElements(elem, map) {
 }
 function updateFieldWhenPlacing(map, ships, elem) {
     if (elem.field == FIELDS.MY) {
-        (map[elem.y][elem.x] == SQUARE_STATE.HAVE_SHIP) ? removeDesk(map, ships, elem): addShip(map, ships, elem);
+        (map[elem.y][elem.x] == SQUARE_STATE.HAVE_SHIP)
+            ? removeDesk(map, ships, elem)
+            : addShip(map, ships, elem);
     }
 }
 export {
