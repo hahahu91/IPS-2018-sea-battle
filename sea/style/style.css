@@ -127,14 +127,14 @@ body {
     border: none;
     background-color: transparent;
 }
-.form-3>.log-form {
+.log-form {
     background-image: url(./../img/backLog.png);
     background-size: 53%;
     background-position: 83px;
     background-repeat: no-repeat;
     overflow: auto;
 }
-.form-3>.pas-form {
+.pas-form {
     margin-top: 25px;
     background-image: url(./../img/backPas.png);
     background-size: 53%;
@@ -142,7 +142,7 @@ body {
     background-repeat: no-repeat;
     overflow: auto;
 }
-.form-3>.reg-form {
+.reg-form {
     float: left;
     width: 130px;
     height: 50px;
@@ -351,3 +351,20 @@ input:hover
   .error {
       color: red !important;
   }
+  
+.menu-main {
+    list-style: none;
+    text-align: left;
+    background: transparent;
+    padding: 10px;
+}
+.menu-main a {
+    width: 33%;
+    text-transform: uppercase;
+}
+.menu-main li:nth-child(3) {
+    text-align: right;
+}
+.menu-main li:nth-child(2) {
+    text-align: center;
+}

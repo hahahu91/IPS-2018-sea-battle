@@ -9,7 +9,6 @@ if (empty($name) || empty($password)) {
     echo json_encode(ERR_NO_PARAM);
     return;
 }
-
 $registredUsers = getUserInfoByName($name);
 
 if (empty($registredUsers)) {
@@ -18,6 +17,7 @@ if (empty($registredUsers)) {
 }
 
 if (checkPassword($name, $password)) {
+    saveToSession('username', $name);
     echo json_encode(ERR_NO_ERROR);
     exit();
 } else {
