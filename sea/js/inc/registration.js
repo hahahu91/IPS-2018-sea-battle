@@ -38,6 +38,10 @@ function registerButtonClicked() {
                     complete: onComplete,
                 });
             }
+        } else {
+            $('#login').addClass('error');
+            $('#password').addClass('error');
+            $('#confirmPassword').addClass('error');
         }
     });
 }

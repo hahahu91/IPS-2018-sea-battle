@@ -7,6 +7,7 @@ require_once("template.inc.php");
 require_once('user.inc.php');
 require_once('errors.inc.php');
 require_once('session.inc.php');
+require_once('result.inc.php');
 
 dbInitialConnect();
 startSession();

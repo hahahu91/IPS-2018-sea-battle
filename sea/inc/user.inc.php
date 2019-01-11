@@ -19,7 +19,13 @@ function registerUser($name, $pass)
     dbQuery($insertNewUserQueryString);
     return dbGetLastInsertId();
 } 
-
+function createUserRecordScore($userID) {
+    $saveScoreQueryString = "INSERT INTO " . RESULT_TABLE . "(user_id, game_date, wins, loses) 
+            VALUES ('" . dbQuote($userID) . "', '" . date("Y-m-d") . "', '0', '0')";
+    echo $saveScoreQueryString;
+    dbQuery($saveScoreQueryString);
+    return $userID;        
+}
 function getPasswordByName($name)
 {
     $getPasswordQueryString = "SELECT user_password FROM " . USER_TABLE .  " WHERE user_name = '" . dbQuote($name)  . "'";

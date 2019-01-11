@@ -74,7 +74,9 @@ function missHandler(map, elem) {
     map[elem.y][elem.x] = SQUARE_STATE.MISS;
     Game.move = !Game.move;
     if (Game.move == ENEMY_MOVE && Game.player2 == 'AI') {
-        enemyMove();
+        setTimeout(function() {
+            enemyMove();
+        }, 300);
     }
 }
 function killedHandler(map, ships, elem) {
@@ -100,6 +102,21 @@ function finishGame() {
         alertMessage();
     }, 100);
     Game.finish = true;
+    let isWin = true;
+    if (Game.move == ENEMY_MOVE) {
+        isWin = false;
+    }
+    const data = {'isWin': isWin};
+    $.ajax({
+        url: 'inc/save_score.inc.php',
+        type: 'POST',
+        data: data,
+        dataType: 'json',
+        complete: onComplete,
+    });
+}
+function onComplete(response) {
+    console.log(response.responseText);
 }
 function checkHit(enemyMap, myMovesMap, elem) {
     if (enemyMap[elem.y][elem.x] == SQUARE_STATE.HAVE_SHIP) {

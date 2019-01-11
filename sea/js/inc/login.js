@@ -29,6 +29,6 @@ function onCompleteLogin(response) {
     if (response.responseText != ERR_NO_ERROR) {
         showLoginError();
     } else {
-        window.location = 'index_personal_page.php';
+        window.location = 'index.php';
     }
 }

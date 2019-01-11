@@ -7,3 +7,4 @@ define('DB_PASS', '123qwe');
 define('DB_NAME', 'seabattle');
 define('DB_PORT', '3306'); 
 define('USER_TABLE', 'users');
+define('RESULT_TABLE', 'results');
