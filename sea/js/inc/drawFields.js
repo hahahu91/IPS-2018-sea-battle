@@ -13,9 +13,9 @@ function draw(ctx) {
 function createField(ctx) {
     const x = OFFSET_FIELD.x;
     const y = OFFSET_FIELD.y;
-    const height = parseInt(CANVAS_SIZE.HEIGHT / WIDTH_SQUARE);
-    const width = parseInt(CANVAS_SIZE.WIDTH / WIDTH_SQUARE);
-    createCommonField(ctx, 0, 0, width + 1, height + 1);
+    const height = parseInt(CANVAS_SIZE.HEIGHT / WIDTH_SQUARE) + 1;
+    const width = parseInt(CANVAS_SIZE.WIDTH / WIDTH_SQUARE) + 1;
+    createCommonField(ctx, 0, 0, width, height);
     createOneField(ctx, x, y, FIELDS.MY);
 }
 function createCommonField(ctx, xBegin, yBegin, width, height) {
@@ -55,7 +55,6 @@ function drawButton(ctx, normalX, normalY, button) {
     outerField(ctx, x, y, button.HEIGHT, button.WIDTH);
     ctx.fillText(button.NAME, xMid, yMid, button.WIDTH * WIDTH_SQUARE);
 };
-//drawMap переделать!
 function drawMap(ctx, map, field, needOuter = true) {
     const normalX = OFFSET_FIELD.x + field * (BOX_WIDTH);
     const normalY = OFFSET_FIELD.y;

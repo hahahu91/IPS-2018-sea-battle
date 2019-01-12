@@ -32,6 +32,7 @@ const MAX_SHIPS = {
     threeDesk: 2,
     fourDesk: 1,
 };
+const AI = 'AI';
 const MY_MOVE = true;
 const ENEMY_MOVE = false;
 
@@ -57,6 +58,7 @@ export {
     BOX_WIDTH,
     CANVAS_SIZE,
     GAME_STAGE,
+    AI,
 };
 
 

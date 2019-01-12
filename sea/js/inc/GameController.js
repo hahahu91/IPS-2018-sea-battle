@@ -1,7 +1,7 @@
 import {Player} from './Player.js';
 import {getRandomMap} from './maps.js';
 import {markKilledShip, markWhenWounded, markDiaganalElements, isEmptySquare} from './markSquare.js';
-import {BORDER, TYPE_SHIPS, MY_MOVE, ENEMY_MOVE, GAME_STAGE} from './consts.js';
+import {BORDER, TYPE_SHIPS, MY_MOVE, ENEMY_MOVE, GAME_STAGE, AI} from './consts.js';
 import {CHECK_ALL_WAY} from './const/check.js';
 import {FIELDS} from './const/fields.js';
 import {SQUARE_STATE} from './const/square_state.js';
@@ -11,10 +11,10 @@ import {isNull, checkIfAllShipsAreReady, isOnField} from './checksFunctions.js';
 import {getRandomInt} from './mathFunctions.js';
 
 const Game = {
-    state: GAME_STAGE.ARRANGEMENT, //or ready
+    state: GAME_STAGE.ARRANGEMENT,
     move: tossTheCoin(),
     finish: false,
-    player2: 'AI',
+    player2: AI,
 };
 const EnemyPrevHit = {
     x: 0,
@@ -30,10 +30,10 @@ function startGame(ships) {
         alertMessage();
         return;
     }
-    Game.state = GAME_STAGE.READY; //TODO: rename placement to state (arangement | ready)
+    Game.state = GAME_STAGE.READY;
 
     prepareEnemyField();
-    if (Game.move == ENEMY_MOVE && Game.player2 == 'AI') {
+    if (Game.move == ENEMY_MOVE && Game.player2 == AI) {
         enemyMove();
     }
 }
@@ -73,7 +73,7 @@ function handlerAttack(myMovesMap, enemyShips, elem) {
 function missHandler(map, elem) {
     map[elem.y][elem.x] = SQUARE_STATE.MISS;
     Game.move = !Game.move;
-    if (Game.move == ENEMY_MOVE && Game.player2 == 'AI') {
+    if (Game.move == ENEMY_MOVE && Game.player2 == AI) {
         setTimeout(function() {
             enemyMove();
         }, 300);
@@ -164,11 +164,9 @@ function killShip(elem, map) {
     for (const key of Object.keys(CHECK_ALL_WAY)) {
         let x = elem.x;
         let y = elem.y;
-        //TODO: add function to check condition
         while (isOnField(x, y) && map[y][x] == SQUARE_STATE.HAVE_SHIP) {
             y = y + CHECK_ALL_WAY[key].y;
             x = x + CHECK_ALL_WAY[key].x;
-            //TODO: add variable
             if (isOnField(x, y) && isEmptySquare(map[y][x])) {
                 return {
                     y: y,
@@ -181,11 +179,7 @@ function killShip(elem, map) {
 }
 
 function aI() {
-    let el = {
-        x: 0,
-        y: 0,
-        field: 0,
-    };
+    let el = {x: 0, y: 0, field: 0};
     do {
         if (EnemyPrevHit.isHit) {
             el = killShip(EnemyPrevHit, player1.EnemyMoves);

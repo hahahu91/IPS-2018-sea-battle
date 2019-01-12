@@ -15,9 +15,7 @@ function main() {
     canvas.height = CANVAS_SIZE.HEIGHT;
     const ctx = canvas.getContext('2d');
     canvas.addEventListener('mousedown', updateField, false);
-    canvas.addEventListener('click', () => {
-        document.getElementById('audio').play();
-    }, false);
+    canvas.addEventListener('click', enableAudio, false);
     draw(ctx);
     const animateFn = () => {
         redrawAllFields(ctx, player1);
@@ -27,6 +25,7 @@ function main() {
     };
     animateFn();
 }
+
 function updateField(event) {
     const mousePos = mouseCoordinates(canvas, event);
     const elem = searchElem(mousePos);
@@ -70,6 +69,9 @@ function updateOneField(elem) {
     } else if (elem.field == FIELDS.ENEMY && Game.move == MY_MOVE && !Game.finish) {
         handlerAttack(player1.EnemyMap, player1.EnemyShips, elem);
     }
+}
+function enableAudio() {
+    document.getElementById('audio').play();
 }
 
 function mouseCoordinates(canvas, event) {

@@ -4,7 +4,7 @@
     function dbInitialConnect()
     {
         global $g_dbLink;
-        $g_dbLink = mysqli_connect("localhost", "root", "123qwe", "seabattle");
+        $g_dbLink = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         
         $error = mysqli_connect_error();
         if ($error)

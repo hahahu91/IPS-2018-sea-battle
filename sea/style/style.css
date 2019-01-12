@@ -8,8 +8,6 @@ body {
 }
 
 .canvas {
-    /*width: 1000px;
-    height: 500px; */
     position: absolute;
     top: 0;
     bottom: 0;
@@ -21,6 +19,7 @@ body {
     background-image: url("./../img/BackIndex.png");
     background-repeat: no-repeat;
     background-size: 100%;
+    background-position-y: 57px;
     width: 1024px;
     height: 800px;
     margin: 0 auto;
@@ -387,10 +386,10 @@ input:hover
     height: 50px;
     margin-bottom: 10px;
 }
-.column:nth-child(1) {
+.form-personal-page .column:nth-child(1) {
     width: 20%;
 }
-.column:nth-child(2) {
+.form-personal-page .column:nth-child(2) {
     width: 46%;
 }
 .personal-rage-index .column{
@@ -402,7 +401,11 @@ display: table;
 clear: both;
 }
 .score {
-    margin-top: 30px;
+    margin-top: 27px;
+}
+.score p {
+    margin-top: 16px;
+    margin-bottom: -9px;
 }
 .content-support {
     font-weight: 600;
@@ -450,7 +453,7 @@ clear: both;
     text-align:center;
     font-family: 'Mistral', 'Lato', script;
     text-transform: uppercase;
-    padding: 15px;
+    padding: 0;
     font-weight: 400;
     font-size: 25px;
 }
@@ -488,13 +491,14 @@ clear: both;
 }
 .records-table {
     width: 50%;
+    line-height: 27.8px;
     font-family: 'Mistral', 'Lato', script;
     margin: 0 auto;
     font-weight: 400;
     font-size: 20px;
     color: #4847b3;
     height: 50px;
-    padding: 15px 0 0 2px;
+    padding: 3px 0 0 2px;
     text-transform: uppercase;
 }
 .records-table th{
