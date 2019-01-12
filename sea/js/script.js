@@ -15,6 +15,9 @@ function main() {
     canvas.height = CANVAS_SIZE.HEIGHT;
     const ctx = canvas.getContext('2d');
     canvas.addEventListener('mousedown', updateField, false);
+    canvas.addEventListener('click', () => {
+        document.getElementById('audio').play();
+    }, false);
     draw(ctx);
     const animateFn = () => {
         redrawAllFields(ctx, player1);
@@ -24,7 +27,6 @@ function main() {
     };
     animateFn();
 }
-
 function updateField(event) {
     const mousePos = mouseCoordinates(canvas, event);
     const elem = searchElem(mousePos);
